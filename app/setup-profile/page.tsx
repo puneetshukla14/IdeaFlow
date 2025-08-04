@@ -33,7 +33,7 @@ export default function SetupProfilePage() {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Generate username suggestions based on fullName
+  // Generate username suggestions when full name changes
   useEffect(() => {
     if (!form.fullName.trim()) {
       setSuggestions([]);
@@ -46,13 +46,17 @@ export default function SetupProfilePage() {
         `@${base}`,
         `@${base}${Math.floor(Math.random() * 100)}`,
         `@${base}_${Math.floor(Math.random() * 999)}`,
-        `@${base}${new Date().getFullYear()}`,
       ];
       setSuggestions(newSuggestions);
-    }, 400); // delay after typing
+    }, 400);
 
     return () => clearTimeout(timeout);
   }, [form.fullName]);
+
+  const handleSelectSuggestion = (value: string) => {
+    handleChange("username", value);
+    setSuggestions([]); // Hide after selection
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,11 +75,11 @@ export default function SetupProfilePage() {
 
   return (
     <div className="min-h-screen flex relative overflow-hidden bg-gradient-to-br from-blue-900 via-gray-900 to-black p-6">
-      {/* Animated Glow Orbs */}
+      {/* Background Orbs */}
       <div className="absolute top-1/3 left-1/3 w-[600px] h-[600px] bg-blue-500/20 rounded-full blur-3xl animate-pulse-slow" />
       <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500/20 rounded-full blur-2xl animate-pulse-slow" />
 
-      {/* Animated Flowing Curves */}
+      {/* Background Waves */}
       <svg
         className="absolute inset-0 w-full h-full opacity-40"
         xmlns="http://www.w3.org/2000/svg"
@@ -119,7 +123,7 @@ export default function SetupProfilePage() {
         </defs>
       </svg>
 
-      {/* Left side branding */}
+      {/* Left Branding */}
       <div className="hidden lg:flex w-1/2 items-center justify-center p-10 relative z-10">
         <div className="text-center text-white space-y-6 max-w-md">
           <h1 className="text-5xl font-extrabold tracking-tight">
@@ -128,8 +132,6 @@ export default function SetupProfilePage() {
           <p className="text-lg text-gray-300 leading-relaxed">
             Connect with researchers, share your work, and collaborate globally.
           </p>
-
-          {/* Footer Branding */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center">
             <p className="text-sm text-gray-500">© 2025 ResearchHub</p>
             <div className="w-20 border-t border-gray-700 mx-auto my-1"></div>
@@ -138,69 +140,74 @@ export default function SetupProfilePage() {
         </div>
       </div>
 
-{/* Right side form */}
-<div className="flex-1 flex items-center justify-center relative z-10">
-  <form
-    onSubmit={handleSubmit}
-    className="w-full max-w-6xl bg-gray-900/60 backdrop-blur-xl rounded-2xl border border-gray-700/60 shadow-2xl overflow-hidden"
-  >
-    {/* Header */}
-    <div className="px-8 py-6 border-b border-gray-700/50">
-      <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-200 bg-clip-text text-transparent">
-        Complete Your Profile
-      </h2>
-      <p className="text-sm text-gray-300 mt-1">
-        Tell us more about yourself to get started.
-      </p>
-    </div>
-
-    <div className="p-8 space-y-8">
-      {/* Two Column Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {[
-          ["Full Name", "fullName", true],
-          ["Affiliation / Institution", "affiliation", true],
-          ["Primary Field of Research", "fieldOfResearch", true],
-          ["Username / Handle", "username", true],
-          ["Research Keywords", "keywords", false],
-          ["ORCID / ResearcherID", "orcid", false],
-          ["Website / Portfolio", "website", false],
-        ].map(([label, fieldKey, required], idx) => (
-          <div
-            key={`${fieldKey}-${idx}`}
-            className={`relative ${idx === 6 ? "md:col-span-2" : ""}`}
-          >
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              {label}
-            </label>
-            <input
-              type="text"
-              value={form[fieldKey as keyof typeof form]}
-              onChange={(e) =>
-                handleChange(fieldKey as string, e.target.value)
-              }
-              className="w-full p-3 rounded-xl bg-gray-800/70 text-white outline-none border border-transparent focus:border-blue-400 focus:ring-2 focus:ring-blue-400/40"
-              required={required as boolean}
-            />
-
-            {/* Username suggestions under Full Name */}
-            {fieldKey === "fullName" && suggestions.length > 0 && (
-              <div className="absolute z-20 w-full mt-1 bg-gray-900/95 border border-gray-700 rounded-lg shadow-lg animate-fadeIn">
-                {suggestions.map((s, i) => (
-                  <div
-                    key={`${s}-${i}`}
-                    onClick={() => handleChange("username", s)}
-                    className="cursor-pointer px-3 py-2 text-sm text-blue-300 hover:bg-blue-700/50 transition"
-                  >
-                    {s}
-                  </div>
-                ))}
-              </div>
-            )}
+      {/* Right Form */}
+      <div className="flex-1 flex items-center justify-center relative z-10">
+        <form
+          onSubmit={handleSubmit}
+          className="w-full max-w-6xl bg-gray-900/60 backdrop-blur-xl rounded-2xl border border-gray-700/60 shadow-2xl overflow-hidden"
+        >
+          <div className="px-8 py-6 border-b border-gray-700/50">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-200 bg-clip-text text-transparent">
+              Complete Your Profile
+            </h2>
+            <p className="text-sm text-gray-300 mt-1">
+              Tell us more about yourself to get started.
+            </p>
           </div>
+
+          <div className="p-8 space-y-8">
+            {/* Inputs */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+{[
+  ["Full Name", "fullName", true],
+  ["Affiliation / Institution", "affiliation", false],
+  ["Primary Field of Research", "fieldOfResearch", true],
+  ["Username / Handle", "username", true],
+  ["Research Keywords", "keywords", false],
+  ["ORCID / ResearcherID", "orcid", false],
+  ["Website / Portfolio", "website", false],
+].map(([label, fieldKey, required], idx) => (
+  <div
+    key={`${fieldKey}-${idx}`}
+    className={`relative ${idx === 6 ? "md:col-span-2" : ""}`}
+  >
+    <label className="block text-sm font-medium text-gray-300 mb-1">
+      {label}{" "}
+      {!required && (
+        <span className="text-gray-500 text-xs">(optional)</span>
+      )}
+    </label>
+    <input
+      type="text"
+      value={form[fieldKey as keyof typeof form]}
+      onChange={(e) =>
+        handleChange(fieldKey as string, e.target.value)
+      }
+      className="w-full p-3 rounded-xl bg-gray-800/70 text-white outline-none border border-transparent focus:border-blue-400 focus:ring-2 focus:ring-blue-400/40"
+      required={required as boolean}
+    />
+
+    {/* Username suggestions */}
+    {fieldKey === "username" && suggestions.length > 0 && (
+      <div className="flex gap-2 mt-2 flex-wrap">
+        {suggestions.map((s, i) => (
+          <button
+            key={`${s}-${i}`}
+            type="button"
+            onClick={() => handleSelectSuggestion(s)}
+            className="px-3 py-1 rounded-lg bg-gray-700 text-blue-300 hover:bg-blue-600/50 transition text-sm whitespace-nowrap"
+          >
+            {s}
+          </button>
         ))}
       </div>
+    )}
+  </div>
+))}
 
+
+             
+            </div>
 
             {/* Avatar Picker */}
             <div>
@@ -254,7 +261,7 @@ export default function SetupProfilePage() {
               </p>
             </div>
 
-            {/* Submit Button */}
+            {/* Submit */}
             <button
               type="submit"
               className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 rounded-xl font-semibold text-white shadow-lg hover:shadow-blue-500/30 transition-all duration-200"

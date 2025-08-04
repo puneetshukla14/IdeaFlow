@@ -8,7 +8,10 @@ export async function GET(req: Request) {
     const clerkId = url.searchParams.get("clerkId");
 
     if (!clerkId) {
-      return NextResponse.json({ success: false, error: "Missing clerkId" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, hasProfile: false, error: "Missing clerkId" },
+        { status: 400 }
+      );
     }
 
     const client = await clientPromise;
@@ -16,9 +19,16 @@ export async function GET(req: Request) {
     const accounts = db.collection("accounts");
 
     const user = await accounts.findOne({ clerkId });
-    return NextResponse.json({ hasProfile: !!user });
+
+    return NextResponse.json({
+      success: true,
+      hasProfile: !!user,
+    });
   } catch (error: any) {
     console.error("Error checking profile:", error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { success: false, hasProfile: false, error: error.message },
+      { status: 500 }
+    );
   }
 }

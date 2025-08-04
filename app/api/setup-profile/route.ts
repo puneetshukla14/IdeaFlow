@@ -16,8 +16,8 @@ export async function POST(req: Request) {
       website,
     } = await req.json();
 
-    // Validate required fields
-    if (!clerkId || !username || !fullName || !affiliation || !fieldOfResearch) {
+    // Validate required fields (only keep actual required ones)
+    if (!clerkId || !username || !fullName || !fieldOfResearch) {
       return NextResponse.json(
         { success: false, error: "Missing required fields" },
         { status: 400 }
@@ -29,7 +29,9 @@ export async function POST(req: Request) {
     const accounts = db.collection("accounts");
 
     // Check for username uniqueness
-    const existingUser = await accounts.findOne({ username: username.trim() });
+    const existingUser = await accounts.findOne({
+      username: username.trim(),
+    });
     if (existingUser) {
       return NextResponse.json(
         { success: false, error: "Username already taken" },
@@ -49,14 +51,14 @@ export async function POST(req: Request) {
     await accounts.insertOne({
       clerkId,
       fullName: fullName.trim(),
-      affiliation: affiliation.trim(),
+      affiliation: affiliation?.trim() || "", // Optional
       fieldOfResearch: fieldOfResearch.trim(),
       username: username.trim(),
       avatar: avatar || null,
       bio: bio?.trim() || "",
       keywords: keywordArray,
       orcid: orcid?.trim() || "",
-      website: website?.trim() || "",
+      website: website?.trim() || "", // Optional
       createdAt: new Date(),
     });
 

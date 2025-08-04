@@ -1,3 +1,4 @@
+// app/api/create-account/route.ts
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 
@@ -5,7 +6,7 @@ export async function POST(req: Request) {
   try {
     const { clerkId, email, fullName } = await req.json();
 
-    if (!clerkId || !email || !fullName) {
+    if (!clerkId || !email) {
       return NextResponse.json(
         { success: false, error: "Missing required fields" },
         { status: 400 }
@@ -13,8 +14,15 @@ export async function POST(req: Request) {
     }
 
     const client = await clientPromise;
-    const db = client.db("myapp");
+    const db = client.db("myapp"); // Change "myapp" if you use a different DB name
 
+    // Check if user already exists
+    const existingUser = await db.collection("accounts").findOne({ clerkId });
+    if (existingUser) {
+      return NextResponse.json({ success: true, message: "User already exists" });
+    }
+
+    // Insert new user
     await db.collection("accounts").insertOne({
       clerkId,
       email,
@@ -23,16 +31,10 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ success: true });
-  } catch (err: unknown) {
-    console.error("Error creating account:", err);
-
-    const message =
-      err instanceof Error
-        ? err.message
-        : "An unexpected error occurred while creating account";
-
+  } catch (error: any) {
+    console.error("Error creating account:", error);
     return NextResponse.json(
-      { success: false, error: message },
+      { success: false, error: error.message || "Internal Server Error" },
       { status: 500 }
     );
   }

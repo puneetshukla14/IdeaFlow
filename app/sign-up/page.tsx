@@ -1,4 +1,3 @@
-// app/sign-up/page.tsx
 "use client";
 
 import { SignUp } from "@clerk/nextjs";
@@ -10,7 +9,6 @@ export default function SignUpPage() {
   const { isSignedIn, user } = useUser();
 
   useEffect(() => {
-    // Once the user signs in right after signup, store them in MongoDB
     if (isSignedIn && user) {
       fetch("/api/create-account", {
         method: "POST",
@@ -26,12 +24,13 @@ export default function SignUpPage() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background */}
       <AuthBackground />
-
-      {/* Clerk Sign-Up Form */}
       <div className="relative z-10">
-        <SignUp routing="hash" signInUrl="/sign-in" />
+        <SignUp
+          routing="hash"
+          signInUrl="/sign-in"
+          afterSignUpUrl="/" // Signup ke baad homepage
+        />
       </div>
     </div>
   );

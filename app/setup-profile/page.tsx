@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 
@@ -27,9 +27,32 @@ export default function SetupProfilePage() {
     website: "",
   });
 
-  const handleChange = (key: string, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+
+  const handleChange = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
+
+  // Generate username suggestions based on fullName
+  useEffect(() => {
+    if (!form.fullName.trim()) {
+      setSuggestions([]);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      const base = form.fullName.toLowerCase().replace(/\s+/g, "");
+      const newSuggestions = [
+        `@${base}`,
+        `@${base}${Math.floor(Math.random() * 100)}`,
+        `@${base}_${Math.floor(Math.random() * 999)}`,
+        `@${base}${new Date().getFullYear()}`,
+      ];
+      setSuggestions(newSuggestions);
+    }, 400); // delay after typing
+
+    return () => clearTimeout(timeout);
+  }, [form.fullName]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,62 +123,84 @@ export default function SetupProfilePage() {
       <div className="hidden lg:flex w-1/2 items-center justify-center p-10 relative z-10">
         <div className="text-center text-white space-y-6 max-w-md">
           <h1 className="text-5xl font-extrabold tracking-tight">
-            Welcome to <span className="text-blue-400">ResearchHub</span>
+            Welcome to <span className="text-blue-400">PuneetHub</span>
           </h1>
           <p className="text-lg text-gray-300 leading-relaxed">
             Connect with researchers, share your work, and collaborate globally.
           </p>
-          <div className="absolute bottom-10 left-10 text-sm text-gray-500">
-            © 2025 ResearchHub
+
+          {/* Footer Branding */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center">
+            <p className="text-sm text-gray-500">© 2025 ResearchHub</p>
+            <div className="w-20 border-t border-gray-700 mx-auto my-1"></div>
+            <p className="text-xs text-gray-500">Developed by Puneet Shukla</p>
           </div>
         </div>
       </div>
 
-      {/* Right side form */}
-      <div className="flex-1 flex items-center justify-center relative z-10">
-        <form
-          onSubmit={handleSubmit}
-          className="w-full max-w-5xl bg-gray-900/60 backdrop-blur-xl rounded-2xl border border-gray-700/60 shadow-2xl overflow-hidden"
-        >
-          {/* Header */}
-          <div className="px-8 py-6 border-b border-gray-700/50">
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-200 bg-clip-text text-transparent">
-              Complete Your Profile
-            </h2>
-            <p className="text-sm text-gray-300 mt-1">
-              Tell us more about yourself to get started.
-            </p>
-          </div>
+{/* Right side form */}
+<div className="flex-1 flex items-center justify-center relative z-10">
+  <form
+    onSubmit={handleSubmit}
+    className="w-full max-w-6xl bg-gray-900/60 backdrop-blur-xl rounded-2xl border border-gray-700/60 shadow-2xl overflow-hidden"
+  >
+    {/* Header */}
+    <div className="px-8 py-6 border-b border-gray-700/50">
+      <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-200 bg-clip-text text-transparent">
+        Complete Your Profile
+      </h2>
+      <p className="text-sm text-gray-300 mt-1">
+        Tell us more about yourself to get started.
+      </p>
+    </div>
 
-          <div className="p-8 space-y-8">
-            {/* Two Column Layout */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[
-                ["Full Name", "fullName", true],
-                ["Affiliation / Institution", "affiliation", true],
-                ["Primary Field of Research", "fieldOfResearch", true],
-                ["Username / Handle", "username", true],
-                ["Research Keywords", "keywords", false],
-                ["ORCID / ResearcherID", "orcid", false],
-                ["Website / Portfolio", "website", false],
-              ].map(([label, key, required], idx) => (
-                <div
-                  key={key}
-                  className={idx === 6 ? "md:col-span-2" : undefined}
-                >
-                  <label className="block text-sm font-medium text-gray-300 mb-1">
-                    {label}
-                  </label>
-                  <input
-                    type="text"
-                    value={form[key as keyof typeof form]}
-                    onChange={(e) => handleChange(key as string, e.target.value)}
-                    className="w-full p-3 rounded-xl bg-gray-800/70 text-white outline-none border border-transparent focus:border-blue-400 focus:ring-2 focus:ring-blue-400/40"
-                    required={required as boolean}
-                  />
-                </div>
-              ))}
-            </div>
+    <div className="p-8 space-y-8">
+      {/* Two Column Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {[
+          ["Full Name", "fullName", true],
+          ["Affiliation / Institution", "affiliation", true],
+          ["Primary Field of Research", "fieldOfResearch", true],
+          ["Username / Handle", "username", true],
+          ["Research Keywords", "keywords", false],
+          ["ORCID / ResearcherID", "orcid", false],
+          ["Website / Portfolio", "website", false],
+        ].map(([label, fieldKey, required], idx) => (
+          <div
+            key={`${fieldKey}-${idx}`}
+            className={`relative ${idx === 6 ? "md:col-span-2" : ""}`}
+          >
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              {label}
+            </label>
+            <input
+              type="text"
+              value={form[fieldKey as keyof typeof form]}
+              onChange={(e) =>
+                handleChange(fieldKey as string, e.target.value)
+              }
+              className="w-full p-3 rounded-xl bg-gray-800/70 text-white outline-none border border-transparent focus:border-blue-400 focus:ring-2 focus:ring-blue-400/40"
+              required={required as boolean}
+            />
+
+            {/* Username suggestions under Full Name */}
+            {fieldKey === "fullName" && suggestions.length > 0 && (
+              <div className="absolute z-20 w-full mt-1 bg-gray-900/95 border border-gray-700 rounded-lg shadow-lg animate-fadeIn">
+                {suggestions.map((s, i) => (
+                  <div
+                    key={`${s}-${i}`}
+                    onClick={() => handleChange("username", s)}
+                    className="cursor-pointer px-3 py-2 text-sm text-blue-300 hover:bg-blue-700/50 transition"
+                  >
+                    {s}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
 
             {/* Avatar Picker */}
             <div>
@@ -246,16 +291,29 @@ export default function SetupProfilePage() {
           }
         }
         .animate-wave-slow {
-          animation: wave-slow 20s linear infinite;
+          animation: wave-slow 30s ease-in-out infinite;
         }
         .animate-wave-slower {
-          animation: wave-slower 30s linear infinite;
+          animation: wave-slower 40s ease-in-out infinite;
         }
         .animate-wave-slowest {
-          animation: wave-slowest 40s linear infinite;
+          animation: wave-slowest 50s ease-in-out infinite;
         }
         .animate-pulse-slow {
           animation: pulse 10s ease-in-out infinite;
+        }
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(5px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out;
         }
       `}</style>
     </div>

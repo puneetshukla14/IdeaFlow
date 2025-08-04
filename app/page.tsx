@@ -1,10 +1,20 @@
 "use client";
 
 import React from "react";
+import { SignOutButton } from "@clerk/nextjs";
 
 export default function Readme() {
   return (
     <div className="relative min-h-screen overflow-hidden text-white font-sans">
+      {/* Logout Button */}
+      <div className="absolute top-4 right-4 z-50">
+        <SignOutButton redirectUrl="/sign-in">
+          <button className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-medium shadow-lg transition-all duration-200">
+            Logout
+          </button>
+        </SignOutButton>
+      </div>
+
       {/* Background Layers */}
       <div className="absolute inset-0 -z-20 animate-gradient bg-gradient-to-br from-[#0d1117] via-[#1b1f2a] via-[#111827] to-[#1e293b] bg-[length:400%_400%]" />
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:80px_80px] animate-grid" />
@@ -66,16 +76,13 @@ export default function Readme() {
         />
         <div className="space-y-5 text-lg text-gray-300">
           <p>
-            <strong className="text-white">IdeaFlow</strong> is not just another research repository —
-            it’s a <strong className="text-white">continuity engine for global research</strong>.
-            Where most research dies when a project halts, IdeaFlow ensures it lives on.
+            <strong className="text-white">IdeaFlow</strong> is not just another research repository — it’s a{" "}
+            <strong className="text-white">continuity engine for global research</strong>. Where most research dies when a project halts, IdeaFlow ensures it lives on.
           </p>
           <blockquote className="border-l-4 border-blue-400 pl-5 italic text-gray-400">
             Make research unstoppable by connecting researchers, preserving progress, and enabling seamless handoffs.
           </blockquote>
-          <p>
-            Think of <strong className="text-white">GitHub meets ResearchGate</strong>, but with:
-          </p>
+          <p>Think of <strong className="text-white">GitHub meets ResearchGate</strong>, but with:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Collaboration‑first approach</li>
             <li>Built‑in version control for research data, papers, and code</li>
@@ -89,9 +96,7 @@ export default function Readme() {
       <section className="px-6 py-20 bg-black/20">
         <h2 className="text-center text-3xl font-bold mb-6">Problem Statement</h2>
         <div className="max-w-4xl mx-auto text-lg text-gray-300 space-y-5">
-          <p>
-            Researchers often work in isolation, and when they stop or abandon a project, their work is lost or inaccessible. This leads to:
-          </p>
+          <p>Researchers often work in isolation, and when they stop or abandon a project, their work is lost or inaccessible. This leads to:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Duplication of effort</li>
             <li>Wasted time</li>

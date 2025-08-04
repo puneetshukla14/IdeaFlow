@@ -1,37 +1,37 @@
 // app/sign-up/page.tsx
 "use client";
 
-import { SignUp, useUser } from "@clerk/nextjs";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { SignUp } from "@clerk/nextjs";
 import AuthBackground from "@/components/AuthBackground";
+import { useUser } from "@clerk/nextjs";
+import { useEffect } from "react";
 
 export default function SignUpPage() {
   const { isSignedIn, user } = useUser();
-  const router = useRouter();
 
   useEffect(() => {
-    async function checkProfile() {
-      if (!isSignedIn || !user) return;
-
-      const res = await fetch(`/api/check-profile?clerkId=${user.id}`);
-      const data = await res.json();
-
-      if (data.hasProfile) {
-        router.push("/"); // already has profile → go home
-      } else {
-        router.push("/setup-profile"); // no profile → setup
-      }
+    if (isSignedIn && user) {
+      fetch("/api/create-account", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clerkId: user.id,
+          email: user.primaryEmailAddress?.emailAddress || "",
+          fullName: user.fullName || "",
+        }),
+      }).catch((err) => console.error("Failed to save user in DB", err));
     }
-
-    checkProfile();
-  }, [isSignedIn, user, router]);
+  }, [isSignedIn, user]);
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <AuthBackground />
       <div className="relative z-10">
-        <SignUp routing="hash" signInUrl="/sign-in" />
+        <SignUp
+          routing="hash"
+          signInUrl="/sign-in"
+          afterSignUpUrl="/setup-profile" // redirect after successful signup
+        />
       </div>
     </div>
   );

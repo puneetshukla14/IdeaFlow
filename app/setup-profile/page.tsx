@@ -14,9 +14,10 @@ const avatars = [
 ];
 
 export default function SetupProfilePage() {
-  const { user } = useUser();
+  const { isLoaded, user } = useUser();
+
   const [form, setForm] = useState({
-    fullName: user?.fullName || "",
+    fullName: "",
     affiliation: "",
     fieldOfResearch: "",
     username: "",
@@ -29,6 +30,18 @@ export default function SetupProfilePage() {
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
 
+  // Fill fullName from Clerk once loaded
+useEffect(() => {
+  if (isLoaded) {
+    setForm((prev) => ({
+      ...prev,
+      fullName: user?.fullName || ""
+    }));
+  }
+}, [isLoaded, user]);
+
+
+  // Handle form field changes
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
@@ -39,7 +52,6 @@ export default function SetupProfilePage() {
       setSuggestions([]);
       return;
     }
-
     const timeout = setTimeout(() => {
       const base = form.fullName.toLowerCase().replace(/\s+/g, "");
       const newSuggestions = [
@@ -49,27 +61,38 @@ export default function SetupProfilePage() {
       ];
       setSuggestions(newSuggestions);
     }, 400);
-
     return () => clearTimeout(timeout);
   }, [form.fullName]);
 
   const handleSelectSuggestion = (value: string) => {
     handleChange("username", value);
-    setSuggestions([]); // Hide after selection
+    setSuggestions([]);
   };
 
+  // Submit form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!isLoaded) {
+      alert("User data is still loading...");
+      return;
+    }
+    if (!user?.id) {
+      alert("No signed-in user found.");
+      return;
+    }
+
     const res = await fetch("/api/setup-profile", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, clerkId: user?.id }),
+      body: JSON.stringify({ ...form, clerkId: user.id }),
     });
 
     if (res.ok) {
       window.location.href = "/";
     } else {
-      alert("Error saving profile");
+      const err = await res.json().catch(() => ({}));
+      alert("Error saving profile: " + (err.error || "Unknown error"));
     }
   };
 
@@ -158,55 +181,51 @@ export default function SetupProfilePage() {
           <div className="p-8 space-y-8">
             {/* Inputs */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-{[
-  ["Full Name", "fullName", true],
-  ["Affiliation / Institution", "affiliation", false],
-  ["Primary Field of Research", "fieldOfResearch", true],
-  ["Username / Handle", "username", true],
-  ["Research Keywords", "keywords", false],
-  ["ORCID / ResearcherID", "orcid", false],
-  ["Website / Portfolio", "website", false],
-].map(([label, fieldKey, required], idx) => (
-  <div
-    key={`${fieldKey}-${idx}`}
-    className={`relative ${idx === 6 ? "md:col-span-2" : ""}`}
-  >
-    <label className="block text-sm font-medium text-gray-300 mb-1">
-      {label}{" "}
-      {!required && (
-        <span className="text-gray-500 text-xs">(optional)</span>
-      )}
-    </label>
-    <input
-      type="text"
-      value={form[fieldKey as keyof typeof form]}
-      onChange={(e) =>
-        handleChange(fieldKey as string, e.target.value)
-      }
-      className="w-full p-3 rounded-xl bg-gray-800/70 text-white outline-none border border-transparent focus:border-blue-400 focus:ring-2 focus:ring-blue-400/40"
-      required={required as boolean}
-    />
+              {[
+                ["Full Name", "fullName", true],
+                ["Affiliation / Institution", "affiliation", false],
+                ["Primary Field of Research", "fieldOfResearch", true],
+                ["Username / Handle", "username", true],
+                ["Research Keywords", "keywords", false],
+                ["ORCID / ResearcherID", "orcid", false],
+                ["Website / Portfolio", "website", false],
+              ].map(([label, fieldKey, required], idx) => (
+                <div
+                  key={`${fieldKey}-${idx}`}
+                  className={`relative ${idx === 6 ? "md:col-span-2" : ""}`}
+                >
+                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                    {label}{" "}
+                    {!required && (
+                      <span className="text-gray-500 text-xs">(optional)</span>
+                    )}
+                  </label>
+                  <input
+                    type="text"
+                    value={form[fieldKey as keyof typeof form]}
+                    onChange={(e) =>
+                      handleChange(fieldKey as string, e.target.value)
+                    }
+                    className="w-full p-3 rounded-xl bg-gray-800/70 text-white outline-none border border-transparent focus:border-blue-400 focus:ring-2 focus:ring-blue-400/40"
+                    required={required as boolean}
+                  />
 
-    {/* Username suggestions */}
-    {fieldKey === "username" && suggestions.length > 0 && (
-      <div className="flex gap-2 mt-2 flex-wrap">
-        {suggestions.map((s, i) => (
-          <button
-            key={`${s}-${i}`}
-            type="button"
-            onClick={() => handleSelectSuggestion(s)}
-            className="px-3 py-1 rounded-lg bg-gray-700 text-blue-300 hover:bg-blue-600/50 transition text-sm whitespace-nowrap"
-          >
-            {s}
-          </button>
-        ))}
-      </div>
-    )}
-  </div>
-))}
-
-
-             
+                  {fieldKey === "username" && suggestions.length > 0 && (
+                    <div className="flex gap-2 mt-2 flex-wrap">
+                      {suggestions.map((s, i) => (
+                        <button
+                          key={`${s}-${i}`}
+                          type="button"
+                          onClick={() => handleSelectSuggestion(s)}
+                          className="px-3 py-1 rounded-lg bg-gray-700 text-blue-300 hover:bg-blue-600/50 transition text-sm whitespace-nowrap"
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
 
             {/* Avatar Picker */}
@@ -308,19 +327,6 @@ export default function SetupProfilePage() {
         }
         .animate-pulse-slow {
           animation: pulse 10s ease-in-out infinite;
-        }
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(5px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out;
         }
       `}</style>
     </div>

@@ -3,6 +3,9 @@ import clientPromise from "@/lib/mongodb";
 
 export async function POST(req: Request) {
   try {
+    const body = await req.json();
+    console.log("Incoming setup-profile data:", body);
+
     const {
       clerkId,
       fullName,
@@ -14,10 +17,10 @@ export async function POST(req: Request) {
       keywords,
       orcid,
       website,
-    } = await req.json();
+    } = body;
 
-    // Validate required fields (only keep actual required ones)
-    if (!clerkId || !username || !fullName || !fieldOfResearch) {
+    // Check required fields
+    if (!clerkId || !fullName || !username) {
       return NextResponse.json(
         { success: false, error: "Missing required fields" },
         { status: 400 }
@@ -28,45 +31,49 @@ export async function POST(req: Request) {
     const db = client.db("myapp");
     const accounts = db.collection("accounts");
 
-    // Check for username uniqueness
-    const existingUser = await accounts.findOne({
-      username: username.trim(),
-    });
-    if (existingUser) {
-      return NextResponse.json(
-        { success: false, error: "Username already taken" },
-        { status: 409 }
+    // See if account already exists
+    const existing = await accounts.findOne({ clerkId });
+    if (existing) {
+      // Update existing profile
+      await accounts.updateOne(
+        { clerkId },
+        {
+          $set: {
+            fullName,
+            affiliation,
+            fieldOfResearch,
+            username,
+            avatar,
+            bio,
+            keywords,
+            orcid,
+            website,
+            updatedAt: new Date(),
+          },
+        }
       );
+    } else {
+      // Insert new profile
+      await accounts.insertOne({
+        clerkId,
+        fullName,
+        affiliation,
+        fieldOfResearch,
+        username,
+        avatar,
+        bio,
+        keywords,
+        orcid,
+        website,
+        createdAt: new Date(),
+      });
     }
-
-    // Normalize keywords safely
-    let keywordArray: string[] = [];
-    if (typeof keywords === "string" && keywords.trim() !== "") {
-      keywordArray = keywords.split(",").map((k) => k.trim());
-    } else if (Array.isArray(keywords)) {
-      keywordArray = keywords.map((k) => String(k).trim());
-    }
-
-    // Insert profile data
-    await accounts.insertOne({
-      clerkId,
-      fullName: fullName.trim(),
-      affiliation: affiliation?.trim() || "", // Optional
-      fieldOfResearch: fieldOfResearch.trim(),
-      username: username.trim(),
-      avatar: avatar || null,
-      bio: bio?.trim() || "",
-      keywords: keywordArray,
-      orcid: orcid?.trim() || "",
-      website: website?.trim() || "", // Optional
-      createdAt: new Date(),
-    });
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
-    console.error("Error saving profile:", error);
+  } catch (err) {
+    console.error("Setup profile API error:", err);
     return NextResponse.json(
-      { success: false, error: error?.message || "Internal server error" },
+      { success: false, error: err instanceof Error ? err.message : "Unknown error" },
       { status: 500 }
     );
   }

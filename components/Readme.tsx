@@ -1,54 +1,39 @@
-// components/Readme.tsx
+"use client";
 import React from "react";
 
 export default function Readme() {
   return (
-    <div className="relative min-h-screen overflow-hidden text-white">
-      {/* Animated Gradient Background */}
-      <div className="absolute inset-0 -z-10 animate-gradient bg-gradient-to-br from-[#0d1117] via-[#1b1f2a] via-[#111827] to-[#1e293b] bg-[length:400%_400%]" />
+    <div className="relative min-h-screen overflow-hidden text-white font-sans">
+      {/* Background Layer: Animated gradient */}
+      <div className="absolute inset-0 -z-20 animate-gradient bg-gradient-to-br from-[#0d1117] via-[#1b1f2a] to-[#1e293b] bg-[length:400%_400%]" />
 
-      <style jsx global>{`
-        @keyframes gradient {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
-        }
-        .animate-gradient {
-          animation: gradient 15s ease infinite;
-        }
-      `}</style>
+      {/* Background Layer: Glowing moving grid */}
+      <div className="absolute inset-0 -z-10 animate-glow-grid pointer-events-none" />
 
       {/* Hero Section */}
       <section className="border-b border-white/5 px-4 py-16 text-center">
         <img
-          src="/assets/logo.png"
+          src="/images/logo.png"
           alt="IdeaFlow Logo"
-          className="mx-auto mb-6 w-28 drop-shadow-[0_0_12px_rgba(124,58,237,0.5)]"
+          className="mx-auto mb-6 w-28 drop-shadow-[0_0_15px_rgba(124,58,237,0.6)]"
         />
-        <h1 className="bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-5xl font-bold tracking-wide text-transparent">
+        <h1 className="text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#9b87f5] via-[#6c63ff] to-[#00d4ff]">
           IDEAFLOW
         </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-gray-400">
+        <p className="mx-auto mt-4 max-w-2xl text-gray-300 text-lg leading-relaxed">
           The research platform built for continuity. <br />
-          When one researcher stops, another continues — without losing
-          progress.
+          When one researcher stops, another continues — without losing progress.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-4">
           <a
             href="#about"
-            className="rounded-lg border border-blue-400/50 bg-white/5 px-6 py-3 font-semibold text-blue-400 backdrop-blur hover:bg-white/10"
+            className="rounded-lg border border-blue-400/50 bg-white/5 px-6 py-3 font-semibold text-blue-300 backdrop-blur hover:bg-white/10 transition"
           >
             Explore Documentation
           </a>
           <a
             href="#demo"
-            className="rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3 font-semibold text-white shadow-lg hover:from-emerald-600 hover:to-emerald-700"
+            className="rounded-lg bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3 font-semibold text-white shadow-lg hover:from-emerald-600 hover:to-emerald-700 transition"
           >
             View Demo
           </a>
@@ -56,14 +41,14 @@ export default function Readme() {
         <p className="mt-4 text-sm text-gray-400">
           <a
             href="https://github.com/your-username/ideaflow/issues"
-            className="text-blue-400"
+            className="text-blue-400 hover:underline"
           >
             Report Bug
           </a>{" "}
           •{" "}
           <a
             href="https://github.com/your-username/ideaflow/issues"
-            className="text-blue-400"
+            className="text-blue-400 hover:underline"
           >
             Request Feature
           </a>
@@ -88,14 +73,13 @@ export default function Readme() {
         />
         <div className="mx-auto max-w-4xl space-y-4 text-lg text-gray-300">
           <p>
-            <strong>IdeaFlow</strong> is not just another research repository —
-            it’s a <strong>continuity engine for global research</strong>. Where
-            most research dies when a project halts, IdeaFlow ensures it lives
-            on.
+            <strong>IdeaFlow</strong> is not just another research repository — it’s a{" "}
+            <strong>continuity engine for global research</strong>. Where most research
+            dies when a project halts, IdeaFlow ensures it lives on.
           </p>
           <blockquote className="border-l-4 border-blue-400 pl-4 italic text-gray-400">
-            Make research unstoppable by connecting researchers, preserving
-            progress, and enabling seamless handoffs.
+            Make research unstoppable by connecting researchers, preserving progress,
+            and enabling seamless handoffs.
           </blockquote>
           <p>
             Think of <strong>GitHub meets ResearchGate</strong>, but with:
@@ -104,55 +88,33 @@ export default function Readme() {
             <li>Collaboration‑first approach</li>
             <li>Built‑in version control for research data, papers, and code</li>
             <li>Real‑time co‑editing and discussion boards</li>
-            <li>
-              Open contribution system so anyone qualified can join and continue
-              a project
-            </li>
+            <li>Open contribution so anyone qualified can continue a project</li>
           </ul>
         </div>
       </section>
 
       {/* Problem Section */}
       <section className="px-4 py-16">
-        <h2 className="mb-4 text-center text-3xl font-bold">
-          Problem Statement
-        </h2>
+        <h2 className="mb-4 text-center text-3xl font-bold">Problem Statement</h2>
         <div className="mx-auto max-w-4xl text-lg text-gray-300">
-          <p>
-            Researchers often work in isolation, and when they stop or abandon
-            a project, their work is lost or inaccessible. This leads to:
-          </p>
+          <p>Researchers often work in isolation. When they stop, their work is lost:</p>
           <ul className="list-disc pl-6">
             <li>Duplication of effort</li>
             <li>Wasted time</li>
             <li>Slower innovation</li>
-          </ul>
-          <p className="mt-4">
-            There’s no unified platform for researchers to:
-          </p>
-          <ul className="list-disc pl-6">
-            <li>Start a project</li>
-            <li>Share progress</li>
-            <li>Allow others to continue seamlessly</li>
           </ul>
         </div>
       </section>
 
       {/* Solution Section */}
       <section className="px-4 py-16">
-        <h2 className="mb-4 text-center text-3xl font-bold">
-          Solution Overview
-        </h2>
+        <h2 className="mb-4 text-center text-3xl font-bold">Solution Overview</h2>
         <div className="mx-auto max-w-4xl text-lg text-gray-300">
           <ol className="list-decimal pl-6">
             <li>Researchers create projects and share progress.</li>
-            <li>Others can pick up exactly where they left off.</li>
-            <li>
-              All updates are tracked with version control for research.
-            </li>
-            <li>
-              Collaboration happens in real-time or asynchronously.
-            </li>
+            <li>Others continue where they left off.</li>
+            <li>All updates tracked with research version control.</li>
+            <li>Collaboration in real-time or async.</li>
           </ol>
         </div>
       </section>
@@ -164,27 +126,23 @@ export default function Readme() {
           <table className="w-full table-auto border-collapse text-left text-gray-300">
             <tbody>
               <tr className="border-b border-white/10">
-                <td className="p-4 font-bold">📂 Project Management</td>
+                <td className="p-4 font-bold">Project Management</td>
                 <td>Create, manage, and store research projects.</td>
               </tr>
               <tr className="border-b border-white/10">
-                <td className="p-4 font-bold">🤝 Collaboration</td>
+                <td className="p-4 font-bold">Collaboration</td>
                 <td>Open projects for others to contribute.</td>
               </tr>
               <tr className="border-b border-white/10">
-                <td className="p-4 font-bold">📝 Real-Time Notes</td>
+                <td className="p-4 font-bold">Real-Time Notes</td>
                 <td>Shared document editing & discussions.</td>
               </tr>
               <tr className="border-b border-white/10">
-                <td className="p-4 font-bold">📊 Contribution Tracking</td>
-                <td>Reputation & version control for research.</td>
-              </tr>
-              <tr className="border-b border-white/10">
-                <td className="p-4 font-bold">🔍 Search & Discover</td>
-                <td>Find projects by keywords & tags.</td>
+                <td className="p-4 font-bold">Contribution Tracking</td>
+                <td>Reputation & research version control.</td>
               </tr>
               <tr>
-                <td className="p-4 font-bold">🤖 AI Assistance</td>
+                <td className="p-4 font-bold">AI Assistance</td>
                 <td>Summarize research & suggest next steps.</td>
               </tr>
             </tbody>

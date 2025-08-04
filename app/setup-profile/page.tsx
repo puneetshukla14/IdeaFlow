@@ -48,9 +48,53 @@ export default function SetupProfilePage() {
 
   return (
     <div className="min-h-screen flex relative overflow-hidden bg-gradient-to-br from-blue-900 via-gray-900 to-black p-6">
-      {/* Background glow effects */}
-      <div className="absolute top-1/3 left-1/3 w-[600px] h-[600px] bg-blue-500/20 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500/20 rounded-full blur-2xl" />
+      {/* Animated Glow Orbs */}
+      <div className="absolute top-1/3 left-1/3 w-[600px] h-[600px] bg-blue-500/20 rounded-full blur-3xl animate-pulse-slow" />
+      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500/20 rounded-full blur-2xl animate-pulse-slow" />
+
+      {/* Animated Flowing Curves */}
+      <svg
+        className="absolute inset-0 w-full h-full opacity-40"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="none"
+      >
+        <path
+          d="M0 300 Q500 100 1000 300 T2000 300"
+          stroke="url(#grad1)"
+          strokeWidth="3"
+          fill="transparent"
+          className="animate-wave-slow"
+        />
+        <path
+          d="M0 500 Q500 300 1000 500 T2000 500"
+          stroke="url(#grad2)"
+          strokeWidth="2"
+          fill="transparent"
+          className="animate-wave-slower"
+        />
+        <path
+          d="M0 700 Q500 500 1000 700 T2000 700"
+          stroke="url(#grad3)"
+          strokeWidth="4"
+          fill="transparent"
+          className="animate-wave-slowest"
+        />
+
+        <defs>
+          <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#60a5fa" />
+            <stop offset="100%" stopColor="#a78bfa" />
+          </linearGradient>
+          <linearGradient id="grad2" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#f472b6" />
+            <stop offset="100%" stopColor="#60a5fa" />
+          </linearGradient>
+          <linearGradient id="grad3" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#34d399" />
+            <stop offset="100%" stopColor="#60a5fa" />
+          </linearGradient>
+        </defs>
+      </svg>
 
       {/* Left side branding */}
       <div className="hidden lg:flex w-1/2 items-center justify-center p-10 relative z-10">
@@ -86,101 +130,31 @@ export default function SetupProfilePage() {
           <div className="p-8 space-y-8">
             {/* Two Column Layout */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Full Name */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  value={form.fullName}
-                  onChange={(e) => handleChange("fullName", e.target.value)}
-                  className="w-full p-3 rounded-xl bg-gray-800/70 text-white outline-none border border-transparent focus:border-blue-400 focus:ring-2 focus:ring-blue-400/40"
-                  required
-                />
-              </div>
-
-              {/* Affiliation */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
-                  Affiliation / Institution
-                </label>
-                <input
-                  type="text"
-                  value={form.affiliation}
-                  onChange={(e) => handleChange("affiliation", e.target.value)}
-                  className="w-full p-3 rounded-xl bg-gray-800/70 text-white outline-none border border-transparent focus:border-blue-400 focus:ring-2 focus:ring-blue-400/40"
-                  required
-                />
-              </div>
-
-              {/* Field of Research */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
-                  Primary Field of Research
-                </label>
-                <input
-                  type="text"
-                  value={form.fieldOfResearch}
-                  onChange={(e) => handleChange("fieldOfResearch", e.target.value)}
-                  className="w-full p-3 rounded-xl bg-gray-800/70 text-white outline-none border border-transparent focus:border-blue-400 focus:ring-2 focus:ring-blue-400/40"
-                  required
-                />
-              </div>
-
-              {/* Username */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
-                  Username / Handle
-                </label>
-                <input
-                  type="text"
-                  value={form.username}
-                  onChange={(e) => handleChange("username", e.target.value)}
-                  className="w-full p-3 rounded-xl bg-gray-800/70 text-white outline-none border border-transparent focus:border-blue-400 focus:ring-2 focus:ring-blue-400/40"
-                  required
-                />
-              </div>
-
-              {/* Keywords */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
-                  Research Keywords
-                </label>
-                <input
-                  type="text"
-                  value={form.keywords}
-                  onChange={(e) => handleChange("keywords", e.target.value)}
-                  placeholder="AI, ML, Data Science"
-                  className="w-full p-3 rounded-xl bg-gray-800/70 text-white outline-none border border-transparent focus:border-blue-400 focus:ring-2 focus:ring-blue-400/40"
-                />
-              </div>
-
-              {/* ORCID */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">
-                  ORCID / ResearcherID
-                </label>
-                <input
-                  type="text"
-                  value={form.orcid}
-                  onChange={(e) => handleChange("orcid", e.target.value)}
-                  className="w-full p-3 rounded-xl bg-gray-800/70 text-white outline-none border border-transparent focus:border-blue-400 focus:ring-2 focus:ring-blue-400/40"
-                />
-              </div>
-
-              {/* Website */}
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-300 mb-1">
-                  Website / Portfolio
-                </label>
-                <input
-                  type="text"
-                  value={form.website}
-                  onChange={(e) => handleChange("website", e.target.value)}
-                  className="w-full p-3 rounded-xl bg-gray-800/70 text-white outline-none border border-transparent focus:border-blue-400 focus:ring-2 focus:ring-blue-400/40"
-                />
-              </div>
+              {[
+                ["Full Name", "fullName", true],
+                ["Affiliation / Institution", "affiliation", true],
+                ["Primary Field of Research", "fieldOfResearch", true],
+                ["Username / Handle", "username", true],
+                ["Research Keywords", "keywords", false],
+                ["ORCID / ResearcherID", "orcid", false],
+                ["Website / Portfolio", "website", false],
+              ].map(([label, key, required], idx) => (
+                <div
+                  key={key}
+                  className={idx === 6 ? "md:col-span-2" : undefined}
+                >
+                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                    {label}
+                  </label>
+                  <input
+                    type="text"
+                    value={form[key as keyof typeof form]}
+                    onChange={(e) => handleChange(key as string, e.target.value)}
+                    className="w-full p-3 rounded-xl bg-gray-800/70 text-white outline-none border border-transparent focus:border-blue-400 focus:ring-2 focus:ring-blue-400/40"
+                    required={required as boolean}
+                  />
+                </div>
+              ))}
             </div>
 
             {/* Avatar Picker */}
@@ -245,6 +219,45 @@ export default function SetupProfilePage() {
           </div>
         </form>
       </div>
+
+      <style jsx global>{`
+        @keyframes wave-slow {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        @keyframes wave-slower {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-30%);
+          }
+        }
+        @keyframes wave-slowest {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-20%);
+          }
+        }
+        .animate-wave-slow {
+          animation: wave-slow 20s linear infinite;
+        }
+        .animate-wave-slower {
+          animation: wave-slower 30s linear infinite;
+        }
+        .animate-wave-slowest {
+          animation: wave-slowest 40s linear infinite;
+        }
+        .animate-pulse-slow {
+          animation: pulse 10s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }

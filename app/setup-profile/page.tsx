@@ -85,7 +85,8 @@ useEffect(() => {
     const res = await fetch("/api/setup-profile", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, clerkId: user.id }),
+      body: JSON.stringify({ ...form, clerkId: user.id, email: user.primaryEmailAddress?.emailAddress }),
+
     });
 
     if (res.ok) {

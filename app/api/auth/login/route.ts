@@ -1,50 +1,60 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { connectDB } from "@/lib/mongodb";
-import User from "@/models/User";
-
-const JWT_SECRET = process.env.JWT_SECRET || "secret123";
+import dbConnect from "@/lib/mongodb";
+import User, { IUser } from "@/models/User";
+import { signToken } from "@/lib/jwt";
 
 export async function POST(req: Request) {
   try {
     const { username, password } = await req.json();
 
     if (!username || !password) {
-      return NextResponse.json({ error: "Username and password are required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Username and password are required" },
+        { status: 400 }
+      );
     }
 
-    await connectDB();
+    await dbConnect();
 
-    const user = await User.findOne({ username });
+    // Force TypeScript to know it's a Mongoose document
+    const user = (await User.findOne({ username })) as IUser | null;
+
     if (!user) {
-      return NextResponse.json({ error: "Invalid username or password" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Invalid username or password" },
+        { status: 401 }
+      );
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return NextResponse.json({ error: "Invalid username or password" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Invalid username or password" },
+        { status: 401 }
+      );
     }
 
-    // Create JWT token
-    const token = jwt.sign(
-      { id: user._id, username: user.username, userNumber: user.userNumber },
-      JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    // _id works because IUser now explicitly includes it
+    const token = signToken({
+      userId: user._id.toString(),
+      username: user.username,
+    });
 
-    // Set cookie
-    const response = NextResponse.json({ success: true, redirectTo: "/dashboard" });
-    response.cookies.set("token", token, {
+    const response = NextResponse.json({ success: true }, { status: 200 });
+    response.cookies.set({
+      name: "token",
+      value: token,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/"
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
     });
 
     return response;
-  } catch (err) {
-    console.error("Login error:", err);
+  } catch (error) {
+    console.error("Login error:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

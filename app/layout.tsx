@@ -1,12 +1,13 @@
-import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
+// app/layout.tsx
+import { ClerkProvider } from '@clerk/nextjs'
+import './globals.css'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className="min-h-screen">{children}</body>
+        <body>{children}</body>
       </html>
     </ClerkProvider>
-  );
+  )
 }

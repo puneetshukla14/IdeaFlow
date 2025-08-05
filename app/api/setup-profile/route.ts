@@ -1,11 +1,13 @@
 // app/api/setup-profile/route.ts
+export const runtime = "nodejs"; // <-- Add this
+
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
+
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-
     const {
       clerkId,
       fullName,
@@ -27,10 +29,9 @@ export async function POST(req: Request) {
     }
 
     const client = await clientPromise;
-    const db = client.db("your_database_name"); // change this to your DB name
+    const db = client.db("your_database_name"); // Change to your DB name
     const accounts = db.collection("accounts");
 
-    // Update if user already exists, otherwise insert
     await accounts.updateOne(
       { clerkId },
       {
@@ -50,7 +51,14 @@ export async function POST(req: Request) {
       { upsert: true }
     );
 
-    return NextResponse.json({ success: true });
+    // Send a cookie flag to tell middleware profile is complete
+    const res = NextResponse.json({ success: true });
+    res.cookies.set("profileSetupComplete", "true", {
+      path: "/",
+      maxAge: 60, // valid for 1 minute
+    });
+
+    return res;
   } catch (error) {
     console.error("Error saving profile:", error);
     return NextResponse.json(

@@ -2,19 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* === Gradient Animation === */
 @keyframes gradient {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
+.animate-gradient {
+  animation: gradient 15s ease infinite;
+}
+
+/* === Grid Glow Animation === */
 @keyframes gridMove {
   0% { background-position: 0 0; }
   100% { background-position: 200px 200px; }
-}
-
-.animate-gradient {
-  animation: gradient 15s ease infinite;
 }
 
 .animate-glow-grid {
@@ -26,71 +28,38 @@
   box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.15);
 }
 
-/* ---------------------------
-   Gradient Animation
----------------------------- */
-@keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* ---------------------------
-   Animated Gradient Layer
----------------------------- */
-.animate-gradient {
-  animation: gradient 15s ease infinite;
-}
-
-/* ----------------------------------------------------------------------------
-   AUTH BACKGROUND CINEMATIC EFFECT - DARK MODE
-   Layers:
-   - Dark gradient: deep blues, purples, near-black
-   - Subtle floating orbs with low opacity
-   - Dim sparkle particles for depth
----------------------------------------------------------------------------- */
-/* === Floating Animations === */
-@keyframes float-slow {
-  0%, 100% { transform: translateY(0px) translateX(0px); }
-  50% { transform: translateY(-30px) translateX(15px); }
-}
-
-@keyframes float-medium {
-  0%, 100% { transform: translateY(0px) translateX(0px); }
-  50% { transform: translateY(20px) translateX(-20px); }
-}
-
-/* === Continuous Line Movement === */
-@keyframes move-line {
-  0% { stroke-dashoffset: 0; }
-  100% { stroke-dashoffset: -1000; } /* keeps sliding forever */
-}
-
-/* === Sparkle / Twinkle === */
+/* === Sparkle Animation === */
 @keyframes sparkle {
-  0%, 100% { opacity: 0; transform: scale(0.5); }
-  50% { opacity: 1; transform: scale(1); }
-}
-
-/* === Apply Animations === */
-.animate-float-slow {
-  animation: float-slow 15s ease-in-out infinite;
-}
-
-.animate-float-medium {
-  animation: float-medium 12s ease-in-out infinite;
-}
-
-.animate-move-line-fast {
-  stroke-dasharray: 10 10; /* dash pattern */
-  animation: move-line 6s linear infinite; /* faster continuous lines */
-}
-
-.animate-move-line-medium {
-  stroke-dasharray: 10 10;
-  animation: move-line 12s linear infinite; /* slower layered lines */
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.2;
+    transform: scale(0.6);
+  }
 }
 
 .animate-sparkle {
-  animation: sparkle 3s ease-in-out infinite;
+  animation: sparkle 2s infinite ease-in-out;
+}
+
+/* === Float Animation === */
+@keyframes float {
+  0% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-15px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }

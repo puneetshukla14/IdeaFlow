@@ -1,21 +1,25 @@
-import type { Metadata } from "next";
+"use client";
+
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
+import AuthBackground from "@/components/AuthBackground";
 import "../globals.css";
-
-export const metadata: Metadata = {
-  title: "Auth",
-  description: "Authentication Pages",
-};
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider appearance={{ baseTheme: dark }}>
-      <html lang="en">
-        <body className="bg-black text-white">
-          {children}
-        </body>
-      </html>
+    <ClerkProvider
+      appearance={{
+        baseTheme: dark,
+        variables: { colorBackground: "transparent" },
+        elements: {
+          card: "bg-black/30 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl p-8 w-full max-w-md animate-authCard",
+        },
+      }}
+    >
+      <div className="relative min-h-screen flex items-center justify-center">
+        <AuthBackground />
+        <div className="relative z-10">{children}</div>
+      </div>
     </ClerkProvider>
   );
 }

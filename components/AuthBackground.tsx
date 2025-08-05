@@ -8,12 +8,19 @@ interface Sparkle {
   delay: string;
 }
 
+interface Particle {
+  top: string;
+  left: string;
+  delay: string;
+}
+
 export default function AuthBackground() {
   const [sparkles, setSparkles] = useState<Sparkle[]>([]);
+  const [particles, setParticles] = useState<Particle[]>([]);
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const flareRef = useRef<HTMLDivElement>(null);
 
-  // Generate sparkles
+  // Generate sparkles once on client
   useEffect(() => {
     const s = Array.from({ length: 35 }, () => ({
       top: `${Math.random() * 100}%`,
@@ -21,6 +28,16 @@ export default function AuthBackground() {
       delay: `${Math.random() * 3}s`,
     }));
     setSparkles(s);
+  }, []);
+
+  // Generate floating particles once on client
+  useEffect(() => {
+    const p = Array.from({ length: 15 }, () => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 5}s`,
+    }));
+    setParticles(p);
   }, []);
 
   // Mouse parallax
@@ -37,20 +54,19 @@ export default function AuthBackground() {
   // Flare sweep loop
   useEffect(() => {
     if (!flareRef.current) return;
-    let i = 0;
     const sweep = () => {
       if (flareRef.current) {
         flareRef.current.style.left = "-20%";
         flareRef.current.style.opacity = "0";
         setTimeout(() => {
           if (flareRef.current) {
-            flareRef.current.style.transition = "transform 1.5s ease, opacity 1.5s ease";
+            flareRef.current.style.transition =
+              "transform 1.5s ease, opacity 1.5s ease";
             flareRef.current.style.left = "120%";
             flareRef.current.style.opacity = "0.6";
           }
         }, 100);
       }
-      i++;
       setTimeout(sweep, 6000);
     };
     sweep();
@@ -165,14 +181,14 @@ export default function AuthBackground() {
       ))}
 
       {/* Floating Particles */}
-      {Array.from({ length: 15 }).map((_, i) => (
+      {particles.map((p, i) => (
         <div
           key={`p-${i}`}
           className="absolute w-[6px] h-[6px] bg-white/10 rounded-full animate-float"
           style={{
-            top: `${Math.random() * 100}%`,
-            left: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 5}s`,
+            top: p.top,
+            left: p.left,
+            animationDelay: p.delay,
           }}
         />
       ))}
@@ -208,7 +224,8 @@ export default function AuthBackground() {
           animation: gradientShiftFast 12s ease infinite;
         }
         @keyframes sparkle {
-          0%, 100% {
+          0%,
+          100% {
             opacity: 0.8;
             transform: scale(1);
           }

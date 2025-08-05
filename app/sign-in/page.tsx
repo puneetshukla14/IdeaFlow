@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Eye, EyeOff } from 'lucide-react'
-import AuthBackground from '@/components/AuthBackground' // ✅ import your background
+import AuthBackground from '@/components/AuthBackground'
 
 export default function SignInPage() {
   const [form, setForm] = useState({ username: '', password: '' })
@@ -29,8 +29,8 @@ export default function SignInPage() {
       const data = await res.json()
 
       if (!res.ok) {
-        console.error('Login failed:', data)
-        return setError(data?.error || 'Login failed')
+        setError(data?.error || 'Login failed')
+        return
       }
 
       window.location.href = '/dashboard'
@@ -45,7 +45,7 @@ export default function SignInPage() {
       {/* Background */}
       <AuthBackground />
 
-      {/* Card */}
+      {/* Sign-In Card */}
       <div className="relative z-10 w-full max-w-md bg-zinc-900/70 backdrop-blur-xl border border-zinc-700 rounded-xl p-6 shadow-xl">
         <h1 className="text-3xl font-bold text-center text-white mb-6">Welcome Back</h1>
 
@@ -88,6 +88,7 @@ export default function SignInPage() {
             </div>
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
             className="w-full py-2.5 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-semibold rounded-lg shadow-lg transition duration-200"

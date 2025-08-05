@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Eye, EyeOff } from 'lucide-react'
-import AuthBackground from '@/components/AuthBackground' // ✅ Import your shared background
+import AuthBackground from '@/components/AuthBackground'
 
 export default function SignUpPage() {
   const [form, setForm] = useState({ username: '', password: '' })
@@ -23,7 +23,7 @@ export default function SignUpPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
-        credentials: 'include' // ✅ important for cookies
+        credentials: 'include',
       })
 
       const data = await res.json()
@@ -50,7 +50,7 @@ export default function SignUpPage() {
       {/* Sign-Up Card */}
       <div className="relative z-10 w-full max-w-md bg-zinc-900/70 backdrop-blur-xl border border-zinc-700 rounded-xl p-6 shadow-xl">
         <h1 className="text-3xl font-bold text-center text-white mb-6">Create Account</h1>
-        
+
         {error && <p className="text-red-400 text-sm text-center mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-5">

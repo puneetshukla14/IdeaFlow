@@ -1,18 +1,43 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import jwt from "jsonwebtoken";
 
-const isPublicRoute = createRouteMatcher(['/sign-in(.*)'])
+const JWT_SECRET = process.env.JWT_SECRET || "secret123";
 
-export default clerkMiddleware(async (auth, req) => {
-  if (!isPublicRoute(req)) {
-    await auth.protect()
+// Pages that don't require login
+const publicPaths = ["/sign-in", "/sign-up", "/api/auth/login", "/api/auth/signup"];
+
+export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  // Always allow static files and Next.js internals
+  if (pathname.startsWith("/_next") || pathname.startsWith("/favicon.ico")) {
+    return NextResponse.next();
   }
-})
+
+  // Allow public paths without auth
+  if (publicPaths.some(path => pathname.startsWith(path))) {
+    return NextResponse.next();
+  }
+
+  // Check JWT in cookies
+  const token = req.cookies.get("token")?.value;
+  if (!token) {
+    // No token → redirect to signup
+    return NextResponse.redirect(new URL("/sign-up", req.url));
+  }
+
+  try {
+    jwt.verify(token, JWT_SECRET); // will throw if invalid
+    return NextResponse.next();
+  } catch (err) {
+    // Invalid/expired token → redirect to signup
+    return NextResponse.redirect(new URL("/sign-up", req.url));
+  }
+}
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
-  ],
-}
+    "/((?!_next/static|_next/image|favicon.ico).*)"
+  ]
+};

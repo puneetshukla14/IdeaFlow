@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Eye, EyeOff } from 'lucide-react'
-import AuthBackground from '@/components/AuthBackground' // ✅ import your background
+import AuthBackground from '@/components/AuthBackground' // ✅ Import your shared background
 
-export default function SignInPage() {
+export default function SignUpPage() {
   const [form, setForm] = useState({ username: '', password: '' })
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -19,23 +19,25 @@ export default function SignInPage() {
     setError('')
 
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
-        credentials: 'include',
+        credentials: 'include' // ✅ important for cookies
       })
 
       const data = await res.json()
 
       if (!res.ok) {
-        console.error('Login failed:', data)
-        return setError(data?.error || 'Login failed')
+        setError(data?.error || 'Signup failed')
+        return
       }
 
-      window.location.href = '/dashboard'
+      if (data?.redirectTo) {
+        window.location.href = data.redirectTo
+      }
     } catch (err) {
-      console.error('Login error:', err)
+      console.error('Signup Error:', err)
       setError('Something went wrong. Please try again.')
     }
   }
@@ -45,10 +47,10 @@ export default function SignInPage() {
       {/* Background */}
       <AuthBackground />
 
-      {/* Card */}
+      {/* Sign-Up Card */}
       <div className="relative z-10 w-full max-w-md bg-zinc-900/70 backdrop-blur-xl border border-zinc-700 rounded-xl p-6 shadow-xl">
-        <h1 className="text-3xl font-bold text-center text-white mb-6">Welcome Back</h1>
-
+        <h1 className="text-3xl font-bold text-center text-white mb-6">Create Account</h1>
+        
         {error && <p className="text-red-400 text-sm text-center mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -88,18 +90,19 @@ export default function SignInPage() {
             </div>
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
             className="w-full py-2.5 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-semibold rounded-lg shadow-lg transition duration-200"
           >
-            Sign In
+            Sign Up
           </button>
         </form>
 
         <p className="text-sm text-center text-gray-400 mt-6">
-          Don’t have an account?{' '}
-          <Link href="/sign-up" className="text-blue-400 hover:underline hover:text-blue-300">
-            Sign Up
+          Already have an account?{' '}
+          <Link href="/sign-in" className="text-blue-400 hover:underline hover:text-blue-300">
+            Sign In
           </Link>
         </p>
       </div>

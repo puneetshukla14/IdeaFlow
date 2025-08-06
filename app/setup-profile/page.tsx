@@ -107,8 +107,10 @@ export default function SetupProfilePage() {
 
 if (res.ok) {
   const data = await res.json();
-  window.location.href = data.redirectTo || "/dashboard"; // force reload, cookie is present
+  window.location.href = data.redirectTo || "/dashboard";
+  return; // stop execution after reload request
 }
+
 
  else {
   const err = await res.json().catch(() => ({}));

@@ -1,18 +1,18 @@
-'use client'
+'use client';
 
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
-  const router = useRouter()
+  const router = useRouter();
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' })
-      router.push('/sign-in')
+      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+      router.push('/sign-in');
     } catch (err) {
-      console.error('Logout failed:', err)
+      console.error('Logout failed:', err);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white">
@@ -25,5 +25,5 @@ export default function DashboardPage() {
         Logout
       </button>
     </div>
-  )
+  );
 }

@@ -64,7 +64,7 @@ export default function LiveFeed({ className }: { className?: string }) {
     },
   ]);
 
-  // Simulated updates (for demo purposes only)
+  // Simulated updates (demo only)
   useEffect(() => {
     const interval = setInterval(() => {
       setFeed((prev) => [
@@ -88,27 +88,37 @@ export default function LiveFeed({ className }: { className?: string }) {
     <div
       className={clsx(
         className,
-        "bg-white rounded-xl shadow-sm p-4 border border-gray-100"
+        "bg-white rounded-xl shadow-sm border border-gray-200 hover:border-gray-300 transition-colors duration-200"
       )}
     >
-      <div className="mb-3 flex items-center justify-between">
-        <h3 className="font-semibold text-lg">Global Live Feed</h3>
-        <span className="text-xs text-gray-500">Latest public contributions</span>
+      {/* Header */}
+      <div className="px-5 py-3 border-b border-gray-200 flex items-center justify-between">
+        <h3 className="font-semibold text-lg text-gray-800">
+          Global Live Feed
+        </h3>
+        <span className="text-xs text-gray-500">
+          Latest public contributions
+        </span>
       </div>
 
-      <div className="space-y-4 max-h-[400px] overflow-y-auto pr-1">
+      {/* Feed List */}
+      <div className="space-y-3 max-h-[500px] overflow-y-auto px-4 py-3">
         {feed.map((item) => (
           <div
             key={item.id}
-            className="flex items-start gap-3 animate-fade-in"
+            className="flex items-start gap-3 p-2 rounded-lg transition-all duration-200 hover:bg-gray-50 cursor-pointer animate-fade-in"
           >
             {/* Icon */}
-            <div className="flex-shrink-0 mt-1">{getIcon(item.type)}</div>
+            <div className="flex-shrink-0 mt-0.5 p-1 rounded-full bg-gray-100">
+              {getIcon(item.type)}
+            </div>
 
             {/* Content */}
             <div>
-              <p className="text-sm font-medium text-gray-800">{item.title}</p>
-              <p className="text-xs text-gray-500">
+              <p className="text-sm font-medium text-gray-800 leading-snug">
+                {item.title}
+              </p>
+              <p className="text-xs text-gray-500 mt-0.5">
                 {item.author} • {timeAgo(item.timestamp)}
               </p>
             </div>

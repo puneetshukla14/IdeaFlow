@@ -6,10 +6,12 @@ import {
   LayoutDashboard,
   Globe,
   BookOpen,
+  FileText,
+  Database,
+  Code,
   Users,
   MessageSquare,
   CalendarDays,
-  Database,
   Bell,
   Mail,
   User,
@@ -18,6 +20,8 @@ import {
   ChevronRight,
   Menu,
   X,
+  Lightbulb,
+  PenTool,
 } from "lucide-react";
 
 interface MenuItem {
@@ -60,12 +64,35 @@ export default function Sidebar() {
       name: "Dashboard",
       icon: LayoutDashboard,
       path: "/dashboard",
+    },
+
+    // CREATION HUB
+    {
+      name: "Create New",
+      icon: PenTool,
       children: [
-        { name: "Overview", path: "/dashboard" },
-        { name: "Recent Activity", path: "/dashboard/activity" },
-        { name: "Statistics", path: "/dashboard/stats" },
+        { name: "Research Paper", path: "/create/paper" },
+        { name: "Dataset Project", path: "/create/dataset" },
+        { name: "Code / Tool Project", path: "/create/code" },
+        { name: "Collaboration Proposal", path: "/create/collaboration" },
       ],
     },
+
+    // MANAGE MY WORK
+    {
+      name: "My Research",
+      icon: BookOpen,
+      children: [
+        { name: "My Papers", path: "/my-research/papers" },
+        { name: "My Datasets", path: "/my-research/datasets" },
+        { name: "My Code & Tools", path: "/my-research/code" },
+        { name: "Drafts", path: "/my-research/drafts" },
+        { name: "Citations", path: "/my-research/citations" },
+        { name: "Collaboration Invites", path: "/my-research/invitations" },
+      ],
+    },
+
+    // DISCOVERY
     {
       name: "Discover Research",
       icon: Globe,
@@ -76,32 +103,15 @@ export default function Sidebar() {
         { name: "Open Access", path: "/discover/open-access" },
       ],
     },
+
+    // COMMUNITY & EVENTS
     {
-      name: "My Research",
-      icon: BookOpen,
-      children: [
-        { name: "My Papers", path: "/my-research/papers" },
-        { name: "Drafts", path: "/my-research/drafts" },
-        { name: "Citations", path: "/my-research/citations" },
-        { name: "Upload New", path: "/my-research/upload" },
-      ],
-    },
-    {
-      name: "Collaborations",
-      icon: Users,
-      children: [
-        { name: "My Collaborators", path: "/collaborations" },
-        { name: "Find Researchers", path: "/collaborations/find" },
-        { name: "Invitations", path: "/collaborations/invitations" },
-      ],
-    },
-    {
-      name: "Community Discussions",
+      name: "Community",
       icon: MessageSquare,
       children: [
-        { name: "All Discussions", path: "/discussions" },
-        { name: "My Threads", path: "/discussions/my-threads" },
-        { name: "Start New Thread", path: "/discussions/new" },
+        { name: "All Discussions", path: "/community/discussions" },
+        { name: "My Threads", path: "/community/my-threads" },
+        { name: "Start New Thread", path: "/community/new-thread" },
       ],
     },
     {
@@ -113,15 +123,18 @@ export default function Sidebar() {
         { name: "Submit Proposal", path: "/conferences/submit" },
       ],
     },
+
+    // TOOLS
     {
       name: "Datasets & Tools",
       icon: Database,
       children: [
         { name: "Public Datasets", path: "/datasets/public" },
         { name: "Analysis Tools", path: "/datasets/tools" },
-        { name: "Upload Dataset", path: "/datasets/upload" },
       ],
     },
+
+    // DIRECT LINKS
     {
       name: "Notifications",
       icon: Bell,
@@ -144,9 +157,9 @@ export default function Sidebar() {
   ];
 
   const SidebarContent = (
-    <div className="h-screen w-64 bg-gradient-to-b from-[#0f172a] via-[#111827] to-black text-white flex flex-col border-r border-gray-800 shadow-xl">
+    <div className="h-screen w-64 flex flex-col border-r border-gray-800 bg-gradient-to-b from-[#0a0f1f] via-[#0d162b] to-[#05070d] text-white shadow-2xl">
       {/* Logo */}
-      <div className="p-5 border-b border-gray-800 text-center backdrop-blur-lg bg-white/5">
+      <div className="p-5 border-b border-gray-800 bg-white/5 backdrop-blur-md sticky top-0 z-10">
         <h1 className="text-2xl font-extrabold tracking-tight text-blue-400">
           ResearchHub
         </h1>
@@ -168,10 +181,10 @@ export default function Sidebar() {
                     ? toggleExpand(section.name)
                     : handleNavigation(section.path!)
                 }
-                className={`flex items-center justify-between w-full px-4 py-2 text-sm rounded-xl transition-all duration-300 ${
+                className={`flex items-center justify-between w-full px-4 py-2.5 text-sm rounded-lg transition-all duration-300 ${
                   isActive
-                    ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg"
-                    : "text-gray-300 hover:bg-white/10 hover:text-white"
+                    ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md"
+                    : "text-gray-300 hover:bg-blue-500/20 hover:text-white"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -200,7 +213,7 @@ export default function Sidebar() {
                       className={`flex items-center w-full px-3 py-1.5 text-sm rounded-lg transition-all duration-300 ${
                         active === child.path
                           ? "bg-blue-500/80 text-white"
-                          : "text-gray-400 hover:bg-white/10 hover:text-white"
+                          : "text-gray-400 hover:bg-blue-500/20 hover:text-white"
                       }`}
                     >
                       {child.name}
@@ -214,10 +227,10 @@ export default function Sidebar() {
       </nav>
 
       {/* Logout */}
-      <div className="p-4 border-t border-gray-800 backdrop-blur-lg bg-white/5">
+      <div className="p-4 border-t border-gray-800 bg-white/5 backdrop-blur-md sticky bottom-0">
         <button
           onClick={handleLogout}
-          className="flex items-center w-full px-4 py-2 text-sm text-red-400 rounded-xl hover:bg-red-900/40 transition-all duration-300"
+          className="flex items-center w-full px-4 py-2 text-sm text-red-400 rounded-lg hover:bg-red-900/30 transition-all duration-300"
         >
           <LogOut size={18} className="mr-3" />
           Logout

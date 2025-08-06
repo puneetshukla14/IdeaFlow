@@ -19,7 +19,7 @@ import clsx from "clsx";
 /* ------------------ MAIN HEADER ------------------ */
 export default function DashboardHeader() {
   return (
-    <div className="space-y-5 animate-fade-in">
+    <div className="space-y-3 animate-fade-in">
       <HeaderTop />
       <WelcomeBanner />
     </div>
@@ -33,7 +33,7 @@ function HeaderTop() {
       className="
         flex items-center justify-between
         bg-white/40 backdrop-blur-xl
-        px-5 py-3 rounded-2xl
+        px-4 py-2 rounded-xl
         shadow-lg shadow-black/5
         border border-white/20
         transition-all duration-300
@@ -46,6 +46,7 @@ function HeaderTop() {
     </header>
   );
 }
+
 
 /* ------------------ SEARCH BAR ------------------ */
 function SearchBar() {
@@ -353,55 +354,48 @@ function WelcomeBanner() {
 
   return (
     <>
-      <div className="relative overflow-hidden rounded-2xl shadow-lg border border-white/10">
-        {/* Gradient overlay for depth */}
+      <div className="relative overflow-hidden rounded-xl shadow-md border border-white/10">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-900/60 via-purple-800/50 to-indigo-900/50" />
 
-        {/* Subtle blurred orbs */}
-        <div className="absolute -top-20 -left-20 w-80 h-80 bg-blue-500/20 blur-3xl rounded-full animate-pulse-slow" />
-        <div className="absolute top-1/2 -right-20 w-96 h-96 bg-purple-500/20 blur-3xl rounded-full animate-pulse-slow delay-1000" />
+        {/* Orbs */}
+        <div className="absolute -top-20 -left-20 w-64 h-64 bg-blue-500/20 blur-3xl rounded-full animate-pulse-slow" />
+        <div className="absolute top-1/2 -right-20 w-72 h-72 bg-purple-500/20 blur-3xl rounded-full animate-pulse-slow delay-1000" />
 
-        {/* Light sweep */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-0 left-[-150%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/15 to-transparent animate-light-sweep" />
-        </div>
-
-        {/* Content */}
         <div
           className="
             relative z-10 backdrop-blur-xl
-            p-6 sm:p-8 flex flex-col sm:flex-row
+            p-4 sm:p-5 flex flex-col sm:flex-row
             items-start sm:items-center justify-between
           "
         >
-          {/* Left content */}
           <div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white drop-shadow-lg">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white drop-shadow-lg">
               Welcome back, <span className="text-blue-300">Researcher</span>
             </h2>
             <p
               key={quoteIndex}
-              className="mt-2 text-base sm:text-lg text-white/90 font-light transition-all duration-700 ease-in-out animate-fade-in drop-shadow"
+              className="mt-1 text-sm sm:text-base text-white/90 font-light transition-all duration-700 ease-in-out animate-fade-in drop-shadow"
             >
               {greetings[quoteIndex]}
             </p>
           </div>
 
-          {/* CTA */}
           <button
             onClick={() => setShowModal(true)}
             className="
-              relative z-10 mt-4 sm:mt-0 px-5 py-2.5 rounded-lg
-              font-medium flex items-center gap-1
-              bg-gradient-to-r from-blue-500 to-purple-500
-              text-white shadow-lg shadow-blue-500/40
-              hover:shadow-blue-500/70 hover:scale-105 transition-all duration-300
+              relative z-10 mt-3 sm:mt-0 px-3 py-1.5 rounded-md
+              font-medium flex items-center gap-1.5 text-sm
+              bg-gradient-to-r from-blue-600 to-indigo-600
+              text-white shadow-md shadow-blue-900/30
+              hover:shadow-lg hover:shadow-blue-800/40 hover:scale-[1.02]
+              transition-all duration-300
             "
           >
-            View Global Trends <ArrowUpRight size={16} />
+            View Trends <ArrowUpRight size={14} />
           </button>
         </div>
       </div>
+    
 
       {/* Modal */}
       {showModal && (

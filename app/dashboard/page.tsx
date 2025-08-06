@@ -4,7 +4,6 @@ import Sidebar from "@/components/Sidebar";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
 import LiveFeed from "@/components/dashboard/LiveFeed";
-import TrendingResearch from "@/components/dashboard/TrendingResearch";
 import CommunityHighlights from "@/components/dashboard/CommunityHighlights";
 
 export default function DashboardPage() {
@@ -28,13 +27,10 @@ export default function DashboardPage() {
           <DashboardHeader />
         </div>
 
-        {/* Live Feed & Trending */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-slide-up delay-150">
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
-            <LiveFeed />
-          </div>
+        {/* Live Feed - Full Width */}
+        <div className="animate-slide-up delay-150">
           <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
-            <TrendingResearch />
+            <LiveFeed />
           </div>
         </div>
 

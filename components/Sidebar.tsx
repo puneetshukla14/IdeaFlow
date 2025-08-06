@@ -13,12 +13,11 @@ import {
   Bell,
   Mail,
   User,
-  Settings,
   LogOut,
   ChevronDown,
   ChevronRight,
   Menu,
-  X
+  X,
 } from "lucide-react";
 
 interface MenuItem {
@@ -145,9 +144,9 @@ export default function Sidebar() {
   ];
 
   const SidebarContent = (
-    <div className="h-screen w-64 bg-gradient-to-b from-blue-950 via-gray-900 to-black text-white flex flex-col border-r border-gray-800">
+    <div className="h-screen w-64 bg-gradient-to-b from-[#0f172a] via-[#111827] to-black text-white flex flex-col border-r border-gray-800 shadow-xl">
       {/* Logo */}
-      <div className="p-5 border-b border-gray-800 text-center">
+      <div className="p-5 border-b border-gray-800 text-center backdrop-blur-lg bg-white/5">
         <h1 className="text-2xl font-extrabold tracking-tight text-blue-400">
           ResearchHub
         </h1>
@@ -165,37 +164,43 @@ export default function Sidebar() {
             <div key={section.name}>
               <button
                 onClick={() =>
-                  section.children ? toggleExpand(section.name) : handleNavigation(section.path!)
+                  section.children
+                    ? toggleExpand(section.name)
+                    : handleNavigation(section.path!)
                 }
-                className={`flex items-center justify-between w-full px-4 py-2 text-sm rounded-xl transition-all ${
+                className={`flex items-center justify-between w-full px-4 py-2 text-sm rounded-xl transition-all duration-300 ${
                   isActive
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                    ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg"
+                    : "text-gray-300 hover:bg-white/10 hover:text-white"
                 }`}
               >
-                <div className="flex items-center">
-                  <Icon size={18} className="mr-3" />
+                <div className="flex items-center gap-3">
+                  <Icon size={20} className="text-blue-400" />
                   {section.name}
                 </div>
                 {section.children &&
                   (isExpanded ? (
-                    <ChevronDown size={16} />
+                    <ChevronDown size={16} className="text-gray-400" />
                   ) : (
-                    <ChevronRight size={16} />
+                    <ChevronRight size={16} className="text-gray-400" />
                   ))}
               </button>
 
               {/* Sub-menu */}
-              {section.children && isExpanded && (
-                <div className="ml-6 mt-1 space-y-1">
+              {section.children && (
+                <div
+                  className={`ml-6 mt-1 space-y-1 transition-all duration-300 overflow-hidden ${
+                    isExpanded ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
+                  }`}
+                >
                   {section.children.map((child) => (
                     <button
                       key={child.path}
                       onClick={() => handleNavigation(child.path)}
-                      className={`flex items-center w-full px-3 py-1.5 text-sm rounded-lg transition-all ${
+                      className={`flex items-center w-full px-3 py-1.5 text-sm rounded-lg transition-all duration-300 ${
                         active === child.path
-                          ? "bg-blue-500 text-white shadow-sm"
-                          : "text-gray-400 hover:bg-gray-700 hover:text-white"
+                          ? "bg-blue-500/80 text-white"
+                          : "text-gray-400 hover:bg-white/10 hover:text-white"
                       }`}
                     >
                       {child.name}
@@ -209,10 +214,10 @@ export default function Sidebar() {
       </nav>
 
       {/* Logout */}
-      <div className="p-4 border-t border-gray-800">
+      <div className="p-4 border-t border-gray-800 backdrop-blur-lg bg-white/5">
         <button
           onClick={handleLogout}
-          className="flex items-center w-full px-4 py-2 text-sm text-red-400 rounded-xl hover:bg-red-900/40 transition-all"
+          className="flex items-center w-full px-4 py-2 text-sm text-red-400 rounded-xl hover:bg-red-900/40 transition-all duration-300"
         >
           <LogOut size={18} className="mr-3" />
           Logout
@@ -239,13 +244,31 @@ export default function Sidebar() {
       {/* Mobile Sidebar Overlay */}
       {mobileOpen && (
         <div className="fixed inset-0 z-40 flex">
-          <div>{SidebarContent}</div>
+          <div
+            className="transform transition-transform duration-300 translate-x-0"
+            style={{ minWidth: "256px" }}
+          >
+            {SidebarContent}
+          </div>
           <div
             className="flex-1 bg-black/50"
             onClick={() => setMobileOpen(false)}
           ></div>
         </div>
       )}
+
+      <style jsx global>{`
+        .custom-scroll::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+          background-color: rgba(100, 116, 139, 0.5);
+          border-radius: 9999px;
+        }
+      `}</style>
     </>
   );
 }

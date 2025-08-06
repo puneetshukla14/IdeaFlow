@@ -2,7 +2,7 @@
 
 import Sidebar from "@/components/Sidebar";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
-import StatsCards from "@/components/dashboard/StatsCards";
+
 import LiveFeed from "@/components/dashboard/LiveFeed";
 import TrendingResearch from "@/components/dashboard/TrendingResearch";
 import CommunityHighlights from "@/components/dashboard/CommunityHighlights";
@@ -26,11 +26,6 @@ export default function DashboardPage() {
         {/* Header */}
         <div className="animate-slide-up">
           <DashboardHeader />
-        </div>
-
-        {/* Stats Cards */}
-        <div className="animate-slide-up delay-75">
-          <StatsCards />
         </div>
 
         {/* Live Feed & Trending */}

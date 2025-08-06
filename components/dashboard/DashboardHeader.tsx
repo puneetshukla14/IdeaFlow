@@ -11,6 +11,7 @@ import {
   User,
   Inbox,
   CheckCircle2,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 import clsx from "clsx";
@@ -49,8 +50,18 @@ function HeaderTop() {
 /* ------------------ SEARCH BAR ------------------ */
 function SearchBar() {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [showHint, setShowHint] = useState(false);
 
   useEffect(() => {
+    // Show shortcut hint only on first load
+    if (!localStorage.getItem("searchHintShown")) {
+      setShowHint(true);
+      setTimeout(() => {
+        setShowHint(false);
+        localStorage.setItem("searchHintShown", "true");
+      }, 4000);
+    }
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "/") {
         e.preventDefault();
@@ -62,44 +73,48 @@ function SearchBar() {
   }, []);
 
   return (
-    <div
-      className="
-        hidden md:flex items-center
-        bg-white/70 backdrop-blur-md
-        rounded-xl px-3 py-2 w-1/3
-        ring-2 ring-blue-400/60 shadow-inner
-        border border-gray-200/50
-        transition-all duration-300 ease-in-out
-        hover:bg-white/90 hover:shadow-lg
-        hover:ring-blue-400 focus-within:ring-blue-500
-        animate-[pulseGlow_3s_ease-in-out_infinite]
-      "
-    >
-      <Search
-        size={18}
-        className="text-gray-500 mr-2 transition-colors duration-300 ease-in-out group-hover:text-blue-500 focus-within:text-blue-500"
-      />
-      <input
-        ref={inputRef}
-        type="text"
-        placeholder="Search research, papers, datasets..."
+    <div className="relative hidden md:flex items-center">
+      <div
         className="
-          bg-transparent outline-none
-          text-[15px] font-medium w-full
-          placeholder-gray-500 placeholder-opacity-80
+          flex items-center
+          bg-white/70 backdrop-blur-md
+          rounded-xl px-3 py-2 w-80
+          ring-2 ring-blue-400/60 shadow-inner
+          border border-gray-200/50
           transition-all duration-300 ease-in-out
-          focus:placeholder-opacity-50
-        "
-      />
-      <kbd
-        className="
-          ml-2 text-[10px] px-1.5 py-0.5 rounded
-          bg-gray-200/80 text-gray-600 border border-gray-300
-          transition-colors duration-300 ease-in-out
+          hover:bg-white/90 hover:shadow-lg
+          hover:ring-blue-400 focus-within:ring-blue-500
+          animate-[pulseGlow_3s_ease-in-out_infinite]
         "
       >
-        /
-      </kbd>
+        <Search size={18} className="text-gray-500 mr-2" />
+        <input
+          ref={inputRef}
+          type="text"
+          placeholder="Search research, papers, datasets..."
+          className="
+            bg-transparent outline-none
+            text-[15px] font-medium w-full
+            placeholder-gray-500 placeholder-opacity-80
+            focus:placeholder-opacity-50
+          "
+        />
+        <kbd
+          className="
+            ml-2 text-[10px] px-1.5 py-0.5 rounded
+            bg-gray-200/80 text-gray-600 border border-gray-300
+          "
+        >
+          /
+        </kbd>
+      </div>
+
+      {/* Search shortcut hint */}
+      {showHint && (
+        <div className="absolute top-full mt-2 text-xs bg-black text-white px-2 py-1 rounded shadow-lg animate-fade-in">
+          Press / to search instantly
+        </div>
+      )}
     </div>
   );
 }
@@ -111,7 +126,7 @@ function HeaderActions() {
       <HoverDropdown
         title="Notifications"
         icon={<Bell size={18} />}
-        badge
+        badgeCount={3}
         items={[
           {
             icon: <CheckCircle2 size={16} className="text-green-500" />,
@@ -130,6 +145,7 @@ function HeaderActions() {
       <HoverDropdown
         title="Messages"
         icon={<Mail size={18} />}
+        badgeCount={7}
         items={[
           {
             icon: <Inbox size={16} className="text-blue-500" />,
@@ -150,11 +166,11 @@ function HeaderActions() {
 interface HoverDropdownProps {
   title: string;
   icon: React.ReactNode;
-  badge?: boolean;
+  badgeCount?: number;
   items: { icon: React.ReactNode; label: string }[];
 }
 
-function HoverDropdown({ title, icon, badge, items }: HoverDropdownProps) {
+function HoverDropdown({ title, icon, badgeCount, items }: HoverDropdownProps) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -175,7 +191,12 @@ function HoverDropdown({ title, icon, badge, items }: HoverDropdownProps) {
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
-      <IconButton title={title} icon={icon} badge={badge} onClick={() => setOpen(!open)} />
+      <IconButton
+        title={title}
+        icon={icon}
+        badgeCount={badgeCount}
+        onClick={() => setOpen(!open)}
+      />
       <DropdownContainer open={open}>
         <DropdownHeader title={title} />
         <div className="max-h-60 overflow-y-auto">
@@ -192,11 +213,11 @@ function HoverDropdown({ title, icon, badge, items }: HoverDropdownProps) {
 interface IconButtonProps {
   title: string;
   icon: React.ReactNode;
-  badge?: boolean;
+  badgeCount?: number;
   onClick?: () => void;
 }
 
-function IconButton({ title, icon, badge, onClick }: IconButtonProps) {
+function IconButton({ title, icon, badgeCount, onClick }: IconButtonProps) {
   return (
     <button
       title={title}
@@ -208,8 +229,10 @@ function IconButton({ title, icon, badge, onClick }: IconButtonProps) {
       "
     >
       {icon}
-      {badge && (
-        <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full shadow-sm"></span>
+      {badgeCount && badgeCount > 0 && (
+        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full animate-scale-in">
+          {badgeCount}
+        </span>
       )}
     </button>
   );
@@ -232,19 +255,23 @@ function ProfileMenu() {
 
   return (
     <div className="relative" ref={menuRef}>
-      <Image
-        src="/avatars/avatar1.jpg"
-        alt="Profile"
-        width={42}
-        height={42}
-        className="
-          rounded-full cursor-pointer
-          ring-2 ring-transparent
-          hover:ring-blue-400 hover:scale-105
-          transition-all duration-300
-        "
-        onClick={() => setOpen(!open)}
-      />
+      <div className="relative">
+        <Image
+          src="/avatars/avatar1.jpg"
+          alt="Profile"
+          width={42}
+          height={42}
+          className="
+            rounded-full cursor-pointer
+            ring-2 ring-transparent
+            hover:ring-blue-400 hover:scale-105
+            transition-all duration-300
+          "
+          onClick={() => setOpen(!open)}
+        />
+        {/* Online status */}
+        <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+      </div>
       <DropdownContainer open={open}>
         <DropdownItem icon={<User size={16} />} label="My Profile" />
         <DropdownItem icon={<Settings size={16} />} label="Settings" />
@@ -293,13 +320,13 @@ interface DropdownItemProps {
 function DropdownItem({ icon, label, danger }: DropdownItemProps) {
   return (
     <button
-      className={`flex items-center px-4 py-2 text-sm w-full transition-colors duration-200 ${
+      className={`flex items-center px-4 py-2 text-sm w-full transition-all duration-200 ${
         danger
           ? "text-red-600 hover:bg-red-50"
           : "text-gray-700 hover:bg-blue-50 hover:text-blue-600"
-      }`}
+      } hover:scale-[1.02]`}
     >
-      {icon}
+      <span className="transition-transform duration-200 group-hover:scale-110">{icon}</span>
       <span className="ml-2">{label}</span>
     </button>
   );
@@ -312,51 +339,93 @@ function WelcomeBanner() {
     "Pushing the boundaries of human knowledge.",
     "Every discovery starts with curiosity.",
     "Your research shapes the future.",
-    "The world is waiting for your ideas.",
+    "The world is waiting for your ideas."
   ];
+
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setQuoteIndex((prev) => (prev + 1) % greetings.length);
-    }, 4000);
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div
-      className="
-        relative z-0
-        bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600
-        animate-gradient bg-[length:200%_200%]
-        text-white p-6 rounded-2xl shadow-lg
-        flex flex-col sm:flex-row items-start sm:items-center justify-between
-        overflow-hidden
-      "
-    >
-      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 pointer-events-none" />
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight drop-shadow animate-fade-up">
-          Welcome back, Researcher!
-        </h2>
-        <p
-          className="text-sm text-blue-100 mt-1 transition-opacity duration-700 ease-in-out"
-          key={quoteIndex}
+    <>
+      <div className="relative z-0 overflow-hidden rounded-2xl">
+        {/* More subtle blurred orbs */}
+        <div className="absolute -top-20 -left-20 w-80 h-80 bg-blue-600/30 blur-3xl rounded-full animate-pulse-slow" />
+        <div className="absolute top-1/2 -right-20 w-96 h-96 bg-purple-600/25 blur-3xl rounded-full animate-pulse-slow delay-1000" />
+
+        {/* Darker glassmorphism panel for high contrast */}
+        <div
+          className="
+            relative backdrop-blur-xl bg-black/40 border border-white/10
+            p-6 sm:p-8 shadow-lg shadow-black/40 flex flex-col sm:flex-row
+            items-start sm:items-center justify-between
+            overflow-hidden
+          "
         >
-          {greetings[quoteIndex]}
-        </p>
+          {/* Brighter light sweep */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute top-0 left-[-150%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/15 to-transparent animate-light-sweep" />
+          </div>
+
+          {/* Left content */}
+          <div className="relative z-10">
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white drop-shadow-lg">
+              Welcome back,{" "}
+              <span className="font-bold text-blue-300">Researcher</span>
+            </h2>
+            <p
+              key={quoteIndex}
+              className="mt-2 text-base sm:text-lg text-white/90 font-light transition-all duration-700 ease-in-out animate-fade-in drop-shadow-md"
+            >
+              {greetings[quoteIndex]}
+            </p>
+          </div>
+
+          {/* CTA Button with stronger glow */}
+          <button
+            onClick={() => setShowModal(true)}
+            className="
+              relative z-10 mt-4 sm:mt-0 px-5 py-2.5 rounded-lg
+              font-medium flex items-center gap-1
+              bg-gradient-to-r from-blue-500 to-purple-500
+              text-white shadow-lg shadow-blue-500/40
+              transition-all duration-300 hover:scale-105 hover:shadow-blue-500/70
+            "
+          >
+            View Global Trends <ArrowUpRight size={16} />
+          </button>
+        </div>
       </div>
-      <button
-        className="
-          mt-3 sm:mt-0
-          bg-white/90 text-blue-700
-          px-4 py-2 rounded-lg font-semibold
-          hover:bg-white hover:shadow-md
-          flex items-center gap-1
-          transition-all duration-200
-        "
-      >
-        View Global Trends <ArrowUpRight size={16} />
-      </button>
-    </div>
+
+      {/* Example Modal */}
+      {showModal && (
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[999]"
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className="bg-white rounded-lg shadow-lg p-6 w-[400px] max-w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold mb-3">Global Trends</h3>
+            <p className="text-gray-600">
+              Here you could preview trending research topics without leaving
+              the dashboard.
+            </p>
+            <button
+              onClick={() => setShowModal(false)}
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

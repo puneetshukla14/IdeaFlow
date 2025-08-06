@@ -32,13 +32,12 @@ export async function POST(req: Request) {
       username: user.username,
     });
 
-    const redirectTo = hasProfile ? "/" : "/setup-profile";
+    const redirectTo = hasProfile ? "/dashboard" : "/setup-profile";
 
-    // ✅ Cookie set
     const res = NextResponse.json({ success: true, redirectTo }, { status: 200 });
     res.cookies.set("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // prod me true
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24 * 7,

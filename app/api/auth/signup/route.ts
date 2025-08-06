@@ -29,7 +29,6 @@ export async function POST(req: Request) {
       password: hashedPassword,
     });
 
-    // Empty profile create kare
     await UserData.create({ username, profile: {} });
 
     const token = signToken({

@@ -1,4 +1,3 @@
-// app/api/setup-profile/route.ts
 import dbConnect from "@/lib/mongodb";
 import UserData from "@/models/UserData";
 import User from "@/models/User";
@@ -8,7 +7,9 @@ import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {
-    const token = (await cookies()).get("token")?.value;
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -21,7 +22,6 @@ export async function POST(req: Request) {
     const body = await req.json();
     await dbConnect();
 
-    // Save profile data
     await UserData.findOneAndUpdate(
       { username: decoded.username },
       { $set: { profile: body } },
@@ -33,7 +33,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // New token
     const newToken = signToken({
       userId: user._id.toString(),
       username: user.username,
@@ -44,13 +43,11 @@ export async function POST(req: Request) {
       redirectTo: "/dashboard",
     });
 
-    res.cookies.set({
-      name: "token",
-      value: newToken,
+    res.cookies.set("token", newToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      path: "/", // IMPORTANT
+      path: "/",
       maxAge: 60 * 60 * 24 * 7,
     });
 

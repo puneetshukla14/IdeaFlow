@@ -107,11 +107,10 @@ export default function SetupProfilePage() {
 
 if (res.ok) {
   const data = await res.json();
-  // Wait a short moment so the browser stores the cookie before navigating
-  setTimeout(() => {
-    router.replace(data.redirectTo || "/dashboard");
-  }, 300);
-} else {
+  window.location.href = data.redirectTo || "/dashboard"; // force reload, cookie is present
+}
+
+ else {
   const err = await res.json().catch(() => ({}));
   alert("Error saving profile: " + (err.error || "Unknown error"));
 }

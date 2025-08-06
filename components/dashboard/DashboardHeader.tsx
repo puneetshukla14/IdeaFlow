@@ -18,7 +18,7 @@ import clsx from "clsx";
 /* ------------------ MAIN HEADER ------------------ */
 export default function DashboardHeader() {
   return (
-    <div className="space-y-4 animate-fade-in">
+    <div className="space-y-5 animate-fade-in">
       <HeaderTop />
       <WelcomeBanner />
     </div>
@@ -31,11 +31,13 @@ function HeaderTop() {
     <header
       className="
         flex items-center justify-between
-        bg-white/50 backdrop-blur-xl
-        p-4 rounded-2xl shadow-md
-        border border-white/30
+        bg-white/40 backdrop-blur-xl
+        px-5 py-3 rounded-2xl
+        shadow-lg shadow-black/5
+        border border-white/20
         transition-all duration-300
-        hover:shadow-lg hover:border-white/50
+        hover:shadow-xl hover:border-white/30
+        relative z-50
       "
     >
       <SearchBar />
@@ -63,23 +65,41 @@ function SearchBar() {
     <div
       className="
         hidden md:flex items-center
-        bg-gray-100/60 backdrop-blur-sm
+        bg-white/70 backdrop-blur-md
         rounded-xl px-3 py-2 w-1/3
-        focus-within:ring-2 focus-within:ring-blue-400
-        transition-all duration-300
-        hover:bg-gray-100 hover:shadow-md
+        ring-2 ring-blue-400/60 shadow-inner
+        border border-gray-200/50
+        transition-all duration-300 ease-in-out
+        hover:bg-white/90 hover:shadow-lg
+        hover:ring-blue-400 focus-within:ring-blue-500
+        animate-[pulseGlow_3s_ease-in-out_infinite]
       "
     >
       <Search
         size={18}
-        className="text-gray-500 mr-2 transition-colors duration-200 group-hover:text-blue-500"
+        className="text-gray-500 mr-2 transition-colors duration-300 ease-in-out group-hover:text-blue-500 focus-within:text-blue-500"
       />
       <input
         ref={inputRef}
         type="text"
         placeholder="Search research, papers, datasets..."
-        className="bg-transparent outline-none text-sm w-full placeholder-gray-500"
+        className="
+          bg-transparent outline-none
+          text-[15px] font-medium w-full
+          placeholder-gray-500 placeholder-opacity-80
+          transition-all duration-300 ease-in-out
+          focus:placeholder-opacity-50
+        "
       />
+      <kbd
+        className="
+          ml-2 text-[10px] px-1.5 py-0.5 rounded
+          bg-gray-200/80 text-gray-600 border border-gray-300
+          transition-colors duration-300 ease-in-out
+        "
+      >
+        /
+      </kbd>
     </div>
   );
 }
@@ -87,7 +107,7 @@ function SearchBar() {
 /* ------------------ ACTION BUTTONS ------------------ */
 function HeaderActions() {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-3">
       <HoverDropdown
         title="Notifications"
         icon={<Bell size={18} />}
@@ -183,7 +203,7 @@ function IconButton({ title, icon, badge, onClick }: IconButtonProps) {
       onClick={onClick}
       className="
         relative p-2 rounded-full
-        hover:bg-gray-100/80 hover:shadow
+        hover:bg-white/60 hover:shadow
         transition-all duration-200
       "
     >
@@ -215,13 +235,13 @@ function ProfileMenu() {
       <Image
         src="/avatars/avatar1.jpg"
         alt="Profile"
-        width={40}
-        height={40}
+        width={42}
+        height={42}
         className="
           rounded-full cursor-pointer
           ring-2 ring-transparent
           hover:ring-blue-400 hover:scale-105
-          transition-all duration-200
+          transition-all duration-300
         "
         onClick={() => setOpen(!open)}
       />
@@ -241,9 +261,10 @@ function DropdownContainer({ open, children }: { open: boolean; children: React.
       className={clsx(
         `
         absolute right-0 mt-2 w-64
-        bg-white/90 backdrop-blur-lg
-        border border-gray-200 rounded-xl shadow-lg
-        origin-top-right transform transition-all duration-200 ease-out z-50
+        bg-white/95 backdrop-blur-lg
+        border border-gray-200 rounded-xl shadow-xl
+        origin-top-right transform transition-all duration-200 ease-out
+        z-[200]
       `,
         open
           ? "opacity-100 translate-y-0 scale-100"
@@ -257,7 +278,7 @@ function DropdownContainer({ open, children }: { open: boolean; children: React.
 
 function DropdownHeader({ title }: { title: string }) {
   return (
-    <div className="px-4 py-2 text-sm font-semibold text-gray-700 border-b bg-gray-50/80">
+    <div className="px-4 py-2 text-sm font-semibold text-gray-700 border-b bg-gray-50/90">
       {title}
     </div>
   );
@@ -286,29 +307,50 @@ function DropdownItem({ icon, label, danger }: DropdownItemProps) {
 
 /* ------------------ WELCOME BANNER ------------------ */
 function WelcomeBanner() {
+  const [quoteIndex, setQuoteIndex] = useState(0);
+  const greetings = [
+    "Pushing the boundaries of human knowledge.",
+    "Every discovery starts with curiosity.",
+    "Your research shapes the future.",
+    "The world is waiting for your ideas.",
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setQuoteIndex((prev) => (prev + 1) % greetings.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div
       className="
+        relative z-0
         bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600
         animate-gradient bg-[length:200%_200%]
-        text-white p-6 rounded-2xl shadow-xl
+        text-white p-6 rounded-2xl shadow-lg
         flex flex-col sm:flex-row items-start sm:items-center justify-between
+        overflow-hidden
       "
     >
+      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 pointer-events-none" />
       <div>
-        <h2 className="text-2xl font-bold tracking-tight drop-shadow-sm">
+        <h2 className="text-2xl font-bold tracking-tight drop-shadow animate-fade-up">
           Welcome back, Researcher!
         </h2>
-        <p className="text-sm text-blue-100 mt-1">
-          Here’s what’s happening in the global research community today.
+        <p
+          className="text-sm text-blue-100 mt-1 transition-opacity duration-700 ease-in-out"
+          key={quoteIndex}
+        >
+          {greetings[quoteIndex]}
         </p>
       </div>
       <button
         className="
           mt-3 sm:mt-0
-          bg-white text-blue-700
+          bg-white/90 text-blue-700
           px-4 py-2 rounded-lg font-semibold
-          hover:bg-gray-100 hover:shadow-md
+          hover:bg-white hover:shadow-md
           flex items-center gap-1
           transition-all duration-200
         "

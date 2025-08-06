@@ -105,16 +105,17 @@ export default function SetupProfilePage() {
         body: JSON.stringify({ ...form, userId }),
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        // Give the cookie a moment to set before redirect
-        setTimeout(() => {
-          router.push(data.redirectTo || "/dashboard");
-        }, 200);
-      } else {
-        const err = await res.json().catch(() => ({}));
-        alert("Error saving profile: " + (err.error || "Unknown error"));
-      }
+if (res.ok) {
+  const data = await res.json();
+  // Wait a short moment so the browser stores the cookie before navigating
+  setTimeout(() => {
+    router.replace(data.redirectTo || "/dashboard");
+  }, 300);
+} else {
+  const err = await res.json().catch(() => ({}));
+  alert("Error saving profile: " + (err.error || "Unknown error"));
+}
+
     } catch (error) {
       console.error("Error submitting profile:", error);
       alert("Something went wrong. Try again.");

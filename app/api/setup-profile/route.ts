@@ -21,37 +21,36 @@ export async function POST(req: Request) {
     const body = await req.json();
     await dbConnect();
 
-    // Update profile
-    const updatedProfile = await UserData.findOneAndUpdate(
+    // Save profile data
+    await UserData.findOneAndUpdate(
       { username: decoded.username },
       { $set: { profile: body } },
       { new: true, upsert: true }
     );
 
-    // Get user
     const user = await User.findOne({ username: decoded.username });
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Create new token
+    // New token
     const newToken = signToken({
       userId: user._id.toString(),
       username: user.username,
     });
 
-    // Prepare response
     const res = NextResponse.json({
       success: true,
       redirectTo: "/dashboard",
     });
 
-    // Set cookie
-    res.cookies.set("token", newToken, {
+    res.cookies.set({
+      name: "token",
+      value: newToken,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      path: "/",
+      path: "/", // IMPORTANT
       maxAge: 60 * 60 * 24 * 7,
     });
 

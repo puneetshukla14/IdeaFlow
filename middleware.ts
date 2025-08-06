@@ -7,7 +7,6 @@ export function middleware(req: NextRequest) {
 
   const isProtectedRoute = [
     '/dashboard',
-
   ].some((route) => req.nextUrl.pathname.startsWith(route))
 
   if (isProtectedRoute && !token) {
@@ -20,6 +19,5 @@ export function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     '/dashboard/:path*',
-
   ],
 }

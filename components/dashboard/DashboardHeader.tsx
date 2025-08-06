@@ -347,46 +347,47 @@ function WelcomeBanner() {
   useEffect(() => {
     const interval = setInterval(() => {
       setQuoteIndex((prev) => (prev + 1) % greetings.length);
-    }, 3000);
+    }, 4000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <>
-      <div className="relative z-0 overflow-hidden rounded-2xl">
-        {/* More subtle blurred orbs */}
-        <div className="absolute -top-20 -left-20 w-80 h-80 bg-blue-600/30 blur-3xl rounded-full animate-pulse-slow" />
-        <div className="absolute top-1/2 -right-20 w-96 h-96 bg-purple-600/25 blur-3xl rounded-full animate-pulse-slow delay-1000" />
+      <div className="relative overflow-hidden rounded-2xl shadow-lg border border-white/10">
+        {/* Gradient overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/60 via-purple-800/50 to-indigo-900/50" />
 
-        {/* Darker glassmorphism panel for high contrast */}
+        {/* Subtle blurred orbs */}
+        <div className="absolute -top-20 -left-20 w-80 h-80 bg-blue-500/20 blur-3xl rounded-full animate-pulse-slow" />
+        <div className="absolute top-1/2 -right-20 w-96 h-96 bg-purple-500/20 blur-3xl rounded-full animate-pulse-slow delay-1000" />
+
+        {/* Light sweep */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-0 left-[-150%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/15 to-transparent animate-light-sweep" />
+        </div>
+
+        {/* Content */}
         <div
           className="
-            relative backdrop-blur-xl bg-black/40 border border-white/10
-            p-6 sm:p-8 shadow-lg shadow-black/40 flex flex-col sm:flex-row
+            relative z-10 backdrop-blur-xl
+            p-6 sm:p-8 flex flex-col sm:flex-row
             items-start sm:items-center justify-between
-            overflow-hidden
           "
         >
-          {/* Brighter light sweep */}
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute top-0 left-[-150%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/15 to-transparent animate-light-sweep" />
-          </div>
-
           {/* Left content */}
-          <div className="relative z-10">
-            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white drop-shadow-lg">
-              Welcome back,{" "}
-              <span className="font-bold text-blue-300">Researcher</span>
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white drop-shadow-lg">
+              Welcome back, <span className="text-blue-300">Researcher</span>
             </h2>
             <p
               key={quoteIndex}
-              className="mt-2 text-base sm:text-lg text-white/90 font-light transition-all duration-700 ease-in-out animate-fade-in drop-shadow-md"
+              className="mt-2 text-base sm:text-lg text-white/90 font-light transition-all duration-700 ease-in-out animate-fade-in drop-shadow"
             >
               {greetings[quoteIndex]}
             </p>
           </div>
 
-          {/* CTA Button with stronger glow */}
+          {/* CTA */}
           <button
             onClick={() => setShowModal(true)}
             className="
@@ -394,7 +395,7 @@ function WelcomeBanner() {
               font-medium flex items-center gap-1
               bg-gradient-to-r from-blue-500 to-purple-500
               text-white shadow-lg shadow-blue-500/40
-              transition-all duration-300 hover:scale-105 hover:shadow-blue-500/70
+              hover:shadow-blue-500/70 hover:scale-105 transition-all duration-300
             "
           >
             View Global Trends <ArrowUpRight size={16} />
@@ -402,24 +403,23 @@ function WelcomeBanner() {
         </div>
       </div>
 
-      {/* Example Modal */}
+      {/* Modal */}
       {showModal && (
         <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-[999]"
           onClick={() => setShowModal(false)}
         >
           <div
-            className="bg-white rounded-lg shadow-lg p-6 w-[400px] max-w-full"
+            className="bg-white rounded-lg shadow-xl p-6 w-[400px] max-w-full"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-semibold mb-3">Global Trends</h3>
             <p className="text-gray-600">
-              Here you could preview trending research topics without leaving
-              the dashboard.
+              Here you could preview trending research topics without leaving the dashboard.
             </p>
             <button
               onClick={() => setShowModal(false)}
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
+              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
             >
               Close
             </button>

@@ -1,29 +1,120 @@
-function ActivityRow({ activity, date }: { activity: string; date: string }) {
-  return (
-    <tr className="border-b hover:bg-gray-50">
-      <td className="py-2">{activity}</td>
-      <td className="py-2 text-gray-500">{date}</td>
-    </tr>
-  );
+"use client";
+
+import { FileText, Database, Code, Users } from "lucide-react";
+import { useState, useEffect } from "react";
+import clsx from "clsx";
+
+interface FeedItem {
+  id: number;
+  type: "paper" | "dataset" | "code" | "collaboration";
+  title: string;
+  author: string;
+  timestamp: string; // ISO format
 }
 
+/* ------------------ ICON SELECTOR ------------------ */
+function getIcon(type: FeedItem["type"]) {
+  const styles = "w-5 h-5";
+  switch (type) {
+    case "paper":
+      return <FileText className={clsx(styles, "text-blue-500")} />;
+    case "dataset":
+      return <Database className={clsx(styles, "text-green-500")} />;
+    case "code":
+      return <Code className={clsx(styles, "text-purple-500")} />;
+    case "collaboration":
+      return <Users className={clsx(styles, "text-orange-500")} />;
+    default:
+      return null;
+  }
+}
+
+/* ------------------ TIME FORMAT ------------------ */
+function timeAgo(date: string) {
+  const diff = (new Date().getTime() - new Date(date).getTime()) / 1000;
+  if (diff < 60) return `${Math.floor(diff)}s ago`;
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
+}
+
+/* ------------------ MAIN FEED ------------------ */
 export default function LiveFeed({ className }: { className?: string }) {
+  const [feed, setFeed] = useState<FeedItem[]>([
+    {
+      id: 1,
+      type: "paper",
+      title: "Published research paper on AI in Healthcare",
+      author: "Dr. Meera Sharma",
+      timestamp: "2025-08-06T08:20:00Z",
+    },
+    {
+      id: 2,
+      type: "collaboration",
+      title: "Joined collaboration on Quantum Computing",
+      author: "Rajesh Kumar",
+      timestamp: "2025-08-06T06:15:00Z",
+    },
+    {
+      id: 3,
+      type: "dataset",
+      title: "Uploaded dataset for Climate Studies",
+      author: "Ananya Singh",
+      timestamp: "2025-08-05T15:40:00Z",
+    },
+  ]);
+
+  // Simulated updates (for demo purposes only)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFeed((prev) => [
+        {
+          id: prev.length + 1,
+          type: ["paper", "dataset", "code", "collaboration"][
+            Math.floor(Math.random() * 4)
+          ] as FeedItem["type"],
+          title: "New contribution added",
+          author: "User " + (prev.length + 1),
+          timestamp: new Date().toISOString(),
+        },
+        ...prev,
+      ]);
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <div className={`${className} bg-white rounded-xl shadow-sm p-4`}>
-      <h3 className="font-semibold mb-3">Recent Activity</h3>
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-left text-gray-500 border-b">
-            <th className="py-2">Activity</th>
-            <th className="py-2">Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          <ActivityRow activity="Published new paper on AI in Healthcare" date="Aug 4, 2025" />
-          <ActivityRow activity="Joined collaboration on Quantum Computing" date="Aug 3, 2025" />
-          <ActivityRow activity="Uploaded new dataset for Climate Studies" date="Aug 2, 2025" />
-        </tbody>
-      </table>
+    <div
+      className={clsx(
+        className,
+        "bg-white rounded-xl shadow-sm p-4 border border-gray-100"
+      )}
+    >
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="font-semibold text-lg">Global Live Feed</h3>
+        <span className="text-xs text-gray-500">Latest public contributions</span>
+      </div>
+
+      <div className="space-y-4 max-h-[400px] overflow-y-auto pr-1">
+        {feed.map((item) => (
+          <div
+            key={item.id}
+            className="flex items-start gap-3 animate-fade-in"
+          >
+            {/* Icon */}
+            <div className="flex-shrink-0 mt-1">{getIcon(item.type)}</div>
+
+            {/* Content */}
+            <div>
+              <p className="text-sm font-medium text-gray-800">{item.title}</p>
+              <p className="text-xs text-gray-500">
+                {item.author} • {timeAgo(item.timestamp)}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

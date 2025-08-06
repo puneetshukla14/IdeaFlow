@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 const avatars = [
@@ -13,6 +14,8 @@ const avatars = [
 ];
 
 export default function SetupProfilePage() {
+  const router = useRouter();
+
   const [form, setForm] = useState({
     fullName: "",
     affiliation: "",
@@ -30,11 +33,11 @@ export default function SetupProfilePage() {
   const [loadingUser, setLoadingUser] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
 
-  // Fetch logged-in user from /api/auth/me
+  // Fetch logged-in user
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("/api/auth/me");
+        const res = await fetch("/api/auth/me", { credentials: "include" });
         if (res.ok) {
           const data = await res.json();
           if (data?.user) {
@@ -58,7 +61,7 @@ export default function SetupProfilePage() {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Generate username suggestions when full name changes
+  // Generate username suggestions
   useEffect(() => {
     if (!form.fullName.trim()) {
       setSuggestions([]);
@@ -94,17 +97,27 @@ export default function SetupProfilePage() {
       return;
     }
 
-    const res = await fetch("/api/setup-profile", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, userId }),
-    });
+    try {
+      const res = await fetch("/api/setup-profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // IMPORTANT
+        body: JSON.stringify({ ...form, userId }),
+      });
 
-    if (res.ok) {
-      window.location.href = "/";
-    } else {
-      const err = await res.json().catch(() => ({}));
-      alert("Error saving profile: " + (err.error || "Unknown error"));
+      if (res.ok) {
+        const data = await res.json();
+        // Give the cookie a moment to set before redirect
+        setTimeout(() => {
+          router.push(data.redirectTo || "/dashboard");
+        }, 200);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert("Error saving profile: " + (err.error || "Unknown error"));
+      }
+    } catch (error) {
+      console.error("Error submitting profile:", error);
+      alert("Something went wrong. Try again.");
     }
   };
 

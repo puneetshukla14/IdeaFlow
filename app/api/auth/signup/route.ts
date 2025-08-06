@@ -1,51 +1,43 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/mongodb";
-import User, { IUser } from "@/models/User";
+import User from "@/models/User";
+import UserData from "@/models/UserData";
 import { signToken } from "@/lib/jwt";
 
 export async function POST(req: Request) {
   try {
     const { username, password } = await req.json();
-
     if (!username || !password) {
-      return NextResponse.json(
-        { error: "Username and password are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Username and password are required" }, { status: 400 });
     }
 
     await dbConnect();
 
     const existingUser = await User.findOne({ username });
     if (existingUser) {
-      return NextResponse.json(
-        { error: "Username already taken" },
-        { status: 409 }
-      );
+      return NextResponse.json({ error: "Username already taken" }, { status: 409 });
     }
 
     const lastUser = await User.findOne().sort({ userNumber: -1 });
     const newUserNumber = lastUser ? lastUser.userNumber + 1 : 1;
-
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = (await User.create({
+    const newUser = await User.create({
       userNumber: newUserNumber,
       username,
       password: hashedPassword,
-    })) as IUser;
+    });
+
+    // Empty profile create kare
+    await UserData.create({ username, profile: {} });
 
     const token = signToken({
       userId: newUser._id.toString(),
       username: newUser.username,
     });
 
-    const res = NextResponse.json(
-      { success: true, redirectTo: "/dashboard" },
-      { status: 201 }
-    );
-
+    const res = NextResponse.json({ success: true, redirectTo: "/setup-profile" }, { status: 201 });
     res.cookies.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

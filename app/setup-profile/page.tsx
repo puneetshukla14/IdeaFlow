@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 
 const avatars = [
@@ -14,8 +13,6 @@ const avatars = [
 ];
 
 export default function SetupProfilePage() {
-  const { isLoaded, user } = useUser();
-
   const [form, setForm] = useState({
     fullName: "",
     affiliation: "",
@@ -26,22 +23,37 @@ export default function SetupProfilePage() {
     keywords: "",
     orcid: "",
     website: "",
+    email: "",
   });
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
 
-  // Fill fullName from Clerk once loaded
-useEffect(() => {
-  if (isLoaded) {
-    setForm((prev) => ({
-      ...prev,
-      fullName: user?.fullName || ""
-    }));
-  }
-}, [isLoaded, user]);
+  // Fetch logged-in user from /api/auth/me
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/auth/me");
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.user) {
+            setUserId(data.user._id);
+            setForm((prev) => ({
+              ...prev,
+              fullName: data.user.fullName || "",
+              email: data.user.email || "",
+            }));
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching user:", err);
+      } finally {
+        setLoadingUser(false);
+      }
+    })();
+  }, []);
 
-
-  // Handle form field changes
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
@@ -73,11 +85,11 @@ useEffect(() => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!isLoaded) {
+    if (loadingUser) {
       alert("User data is still loading...");
       return;
     }
-    if (!user?.id) {
+    if (!userId) {
       alert("No signed-in user found.");
       return;
     }
@@ -85,8 +97,7 @@ useEffect(() => {
     const res = await fetch("/api/setup-profile", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, clerkId: user.id, email: user.primaryEmailAddress?.emailAddress }),
-
+      body: JSON.stringify({ ...form, userId }),
     });
 
     if (res.ok) {
@@ -151,7 +162,7 @@ useEffect(() => {
       <div className="hidden lg:flex w-1/2 items-center justify-center p-10 relative z-10">
         <div className="text-center text-white space-y-6 max-w-md">
           <h1 className="text-5xl font-extrabold tracking-tight">
-            Welcome to <span className="text-blue-400">PuneetHub</span>
+            Welcome to <span className="text-blue-400">ResearchHub</span>
           </h1>
           <p className="text-lg text-gray-300 leading-relaxed">
             Connect with researchers, share your work, and collaborate globally.

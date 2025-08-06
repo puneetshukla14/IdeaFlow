@@ -33,9 +33,8 @@ export default function SignUpPage() {
         return
       }
 
-      if (data?.redirectTo) {
-        window.location.href = data.redirectTo
-      }
+      // Always send new signups to setup-profile
+      window.location.href = '/setup-profile'
     } catch (err) {
       console.error('Signup Error:', err)
       setError('Something went wrong. Please try again.')

@@ -33,7 +33,12 @@ export default function SignInPage() {
         return
       }
 
-      window.location.href = '/dashboard'
+      // Redirect based on profile completion
+      if (data?.profileComplete === false) {
+        window.location.href = '/setup-profile'
+      } else {
+        window.location.href = '/dashboard'
+      }
     } catch (err) {
       console.error('Login error:', err)
       setError('Something went wrong. Please try again.')

@@ -4,10 +4,10 @@ import { NextResponse } from "next/server";
 import { verifyToken } from "@/lib/jwt";
 import { cookies } from "next/headers";
 
-export async function POST(req: Request) {
+export async function GET() {
   try {
-    // ✅ Cookie safe way
-    const token = (await cookies()).get("token")?.value;
+    // Server side cookie read
+    const token = (await cookies()).get("token")?.value; 
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -17,19 +17,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
-    const body = await req.json();
-
     await dbConnect();
 
-    const updatedProfile = await UserData.findOneAndUpdate(
-      { username: decoded.username },
-      { $set: { profile: body } },
-      { new: true, upsert: true }
-    );
+    const userData = await UserData.findOne({ username: decoded.username }).lean();
+    if (!userData) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
 
-    return NextResponse.json({ success: true, user: updatedProfile });
+    return NextResponse.json({ user: userData }, { status: 200 });
   } catch (err) {
-    console.error("Error saving profile:", err);
+    console.error("Me error:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

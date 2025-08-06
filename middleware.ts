@@ -1,25 +1,28 @@
-import { NextRequest, NextResponse } from 'next/server'
+// middleware.ts
+import { NextRequest, NextResponse } from "next/server";
+import { verifyToken } from "@/lib/jwt";
 
 export function middleware(req: NextRequest) {
-  const token =
-    req.cookies.get('token')?.value ||
-    req.headers.get('cookie')?.match(/token=([^;]+)/)?.[1] || null
+  const token = req.cookies.get("token")?.value;
 
-  const isProtectedRoute = [
-    '/dashboard',
-
-  ].some((route) => req.nextUrl.pathname.startsWith(route))
-
-  if (isProtectedRoute && !token) {
-    return NextResponse.redirect(new URL('/sign-in', req.url))
+  // No token → send to sign-in
+  if (!token) {
+    return NextResponse.redirect(new URL("/sign-up", req.url));
   }
 
-  return NextResponse.next()
+  try {
+    const decoded = verifyToken(token);
+    if (!decoded?.username) {
+      throw new Error("Invalid token");
+    }
+  } catch {
+    // Bad token → send to sign-in
+    return NextResponse.redirect(new URL("/sign-up", req.url));
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    '/dashboard/:path*',
-
-  ],
-}
+  matcher: ["/dashboard/:path*"], // Protect dashboard
+};

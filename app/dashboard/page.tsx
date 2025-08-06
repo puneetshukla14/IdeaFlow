@@ -1,29 +1,21 @@
-'use client';
+// app/dashboard/page.tsx
+"use client";
 
-import { useRouter } from 'next/navigation';
+import Sidebar from "@/components/Sidebar";
 
 export default function DashboardPage() {
-  const router = useRouter();
-
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-      router.push('/sign-in');
-    } catch (err) {
-      console.error('Logout failed:', err);
-    }
-  };
-
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white">
-      <h1 className="text-4xl font-bold text-gray-900 mb-6">Hello</h1>
+    <div className="flex min-h-screen">
+      {/* Sidebar */}
+      <Sidebar />
 
-      <button
-        onClick={handleLogout}
-        className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md transition"
-      >
-        Logout
-      </button>
+      {/* Main content */}
+      <div className="flex-1 p-6 bg-gray-100">
+        <h1 className="text-3xl font-bold text-gray-800">Hello Dashboard</h1>
+        <p className="mt-2 text-gray-600">
+          This is your main dashboard content.
+        </p>
+      </div>
     </div>
   );
 }

@@ -220,7 +220,7 @@ export default function Sidebar() {
                   ? "text-yellow-500/80"
                   : "text-emerald-400/90"
               }`}
-            > 
+            >  
               {trialInfo}     
             </span>   
           )}      

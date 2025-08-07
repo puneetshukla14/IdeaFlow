@@ -226,7 +226,7 @@ export default function Sidebar() {
           )}    
         </div>     
       </div>      
-    </SidebarWrapper> 
+    </SidebarWrapper>  
   );       
      
   return ( 

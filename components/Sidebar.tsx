@@ -70,7 +70,6 @@ export default function Sidebar() {
   };
 
   const isChildActive = (path: string) => pathname === path;
-
   const menuSections: MenuItem[] = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
     {

@@ -137,7 +137,7 @@ export default function Sidebar() {
   ];
 
   const SidebarContent = (
-    <div className="h-screen w-64 flex flex-col bg-[#0e0f12] border-r border-gray-800 shadow-xl transition-all duration-500 ease-in-out">
+    <div className="h-screen w-64 flex flex-col bg-[#0e0f12] border-r border-gray-800 shadow-xl transition-all duration-300">
       {/* Logo */}
       <div className="p-5 border-b border-gray-800 bg-[#111214] sticky top-0 z-10">
         <h1 className="text-2xl font-bold tracking-tight text-blue-400">
@@ -161,10 +161,10 @@ export default function Sidebar() {
                     ? toggleExpand(section.name)
                     : handleNavigation(section.path!)
                 }
-                className={`flex items-center justify-between w-full px-4 py-2.5 text-sm rounded-lg transition-all duration-500 ease-in-out ${
+                className={`flex items-center justify-between w-full px-4 py-2.5 text-sm rounded-lg transition-colors duration-200 ${
                   parentActive
                     ? "bg-blue-600/90 text-white shadow-md"
-                    : "text-gray-400 hover:bg-[#1a1b1f] hover:text-white"
+                    : "text-gray-400 hover:bg-[#1a1b1f]/80 hover:text-white"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -185,26 +185,18 @@ export default function Sidebar() {
               {/* Sub-menu */}
               {section.children && (
                 <div
-                  className={`ml-6 mt-2 space-y-1.5 transition-all duration-700 ease-out ${
-                    isExpanded
-                      ? "opacity-100 translate-y-0 max-h-96"
-                      : "opacity-0 -translate-y-1 max-h-0 overflow-hidden"
+                  className={`ml-6 mt-2 space-y-1.5 overflow-hidden transition-all duration-500 ${
+                    isExpanded ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
                   }`}
-                  style={{
-                    transitionProperty: "opacity, transform, max-height",
-                  }}
                 >
                   {section.children.map((child, idx) => (
                     <button
                       key={child.path}
                       onClick={() => handleNavigation(child.path)}
-                      style={{
-                        transitionDelay: `${isExpanded ? idx * 50 : 0}ms`,
-                      }}
-                      className={`flex items-center w-full px-3 py-1.5 text-sm rounded-md transition-colors duration-400 ease-in-out ${
+                      className={`flex items-center w-full px-3 py-1.5 text-sm rounded-md transition-colors duration-200 ${
                         isChildActive(child.path)
                           ? "bg-blue-500/80 text-white"
-                          : "text-gray-500 hover:bg-[#1a1b1f] hover:text-white"
+                          : "text-gray-500 hover:bg-[#1a1b1f]/80 hover:text-white"
                       }`}
                     >
                       {child.name}
@@ -221,7 +213,7 @@ export default function Sidebar() {
       <div className="p-4 border-t border-gray-800 bg-[#0d0f13]">
         <button
           onClick={handleLogout}
-          className="flex items-center w-full px-4 py-2 text-sm text-red-400 rounded-md hover:bg-red-900/30 transition-all duration-300 ease-in-out"
+          className="flex items-center w-full px-4 py-2 text-sm text-red-400 rounded-md hover:bg-red-900/30 transition-colors duration-200"
         >
           <LogOut size={18} className="mr-3" />
           Logout
@@ -236,7 +228,7 @@ export default function Sidebar() {
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="p-2 bg-[#111214] rounded-md border border-gray-800 text-white transition-all duration-300 hover:bg-[#1a1b1f]"
+          className="p-2 bg-[#111214] rounded-md border border-gray-800 text-white transition-all duration-200 hover:bg-[#1a1b1f]"
         >
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
@@ -248,16 +240,11 @@ export default function Sidebar() {
       {/* Mobile Sidebar */}
       {mobileOpen && (
         <div className="fixed inset-0 z-40 flex">
-          <div
-            className={`transform transition-transform duration-700 ease-in-out ${
-              mobileOpen ? "translate-x-0" : "-translate-x-full"
-            }`}
-            style={{ minWidth: "256px" }}
-          >
+          <div className="w-64 bg-[#0e0f12] shadow-lg transform translate-x-0 transition-transform duration-300">
             {SidebarContent}
           </div>
           <div
-            className="flex-1 bg-black/50 backdrop-blur-sm transition-opacity duration-500"
+            className="flex-1 bg-black/40 backdrop-blur-sm transition-opacity duration-300"
             onClick={() => setMobileOpen(false)}
           ></div>
         </div>

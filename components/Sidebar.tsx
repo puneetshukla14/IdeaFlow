@@ -27,7 +27,6 @@ interface MenuItem {
   path?: string;
   children?: { name: string; path: string }[];
 }
-
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();

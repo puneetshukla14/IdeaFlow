@@ -2,13 +2,11 @@
 
 import Sidebar from "@/components/Sidebar";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
-
 import LiveFeed from "@/components/dashboard/LiveFeed";
-import CommunityHighlights from "@/components/dashboard/CommunityHighlights";
 
 export default function DashboardPage() {
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200">
+    <div className="flex min-h-screen bg-gradient-to-br from-[#0b0c0f] via-[#0e1014] to-[#121417] text-gray-100">
       {/* Sidebar */}
       <Sidebar />
 
@@ -18,7 +16,7 @@ export default function DashboardPage() {
           flex-1 flex flex-col
           p-6 space-y-6
           overflow-y-auto
-          scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent
+          scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent
           animate-fade-in
         "
       >
@@ -29,14 +27,9 @@ export default function DashboardPage() {
 
         {/* Live Feed - Full Width */}
         <div className="animate-slide-up delay-150">
-          <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+          <div className="bg-[#181a1f] rounded-xl shadow-md hover:shadow-lg hover:shadow-black/40 transition-all duration-300 border border-[#24262b]">
             <LiveFeed />
           </div>
-        </div>
-
-        {/* Community Highlights */}
-        <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 animate-slide-up delay-200">
-          <CommunityHighlights />
         </div>
       </div>
     </div>

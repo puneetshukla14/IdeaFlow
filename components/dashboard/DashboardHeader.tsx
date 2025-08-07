@@ -11,7 +11,6 @@ import {
   User,
   Inbox,
   CheckCircle2,
-  X,
 } from "lucide-react";
 import Image from "next/image";
 import clsx from "clsx";
@@ -32,12 +31,12 @@ function HeaderTop() {
     <header
       className="
         flex items-center justify-between
-        bg-white/40 backdrop-blur-xl
+        bg-[#111827]/80 backdrop-blur-xl
         px-4 py-2 rounded-xl
-        shadow-lg shadow-black/5
-        border border-white/20
+        shadow-lg shadow-black/40
+        border border-gray-800
         transition-all duration-300
-        hover:shadow-xl hover:border-white/30
+        hover:shadow-xl hover:border-gray-700
         relative z-50
       "
     >
@@ -47,14 +46,12 @@ function HeaderTop() {
   );
 }
 
-
 /* ------------------ SEARCH BAR ------------------ */
 function SearchBar() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [showHint, setShowHint] = useState(false);
 
   useEffect(() => {
-    // Show shortcut hint only on first load
     if (!localStorage.getItem("searchHintShown")) {
       setShowHint(true);
       setTimeout(() => {
@@ -78,17 +75,16 @@ function SearchBar() {
       <div
         className="
           flex items-center
-          bg-white/70 backdrop-blur-md
+          bg-[#1f2937]/80 backdrop-blur-md
           rounded-xl px-3 py-2 w-80
-          ring-2 ring-blue-400/60 shadow-inner
-          border border-gray-200/50
+          ring-2 ring-blue-500/40 shadow-inner
+          border border-gray-700
           transition-all duration-300 ease-in-out
-          hover:bg-white/90 hover:shadow-lg
-          hover:ring-blue-400 focus-within:ring-blue-500
-          animate-[pulseGlow_3s_ease-in-out_infinite]
+          hover:bg-[#1f2937] hover:shadow-lg
+          hover:ring-blue-500 focus-within:ring-blue-400
         "
       >
-        <Search size={18} className="text-gray-500 mr-2" />
+        <Search size={18} className="text-gray-400 mr-2" />
         <input
           ref={inputRef}
           type="text"
@@ -96,23 +92,23 @@ function SearchBar() {
           className="
             bg-transparent outline-none
             text-[15px] font-medium w-full
-            placeholder-gray-500 placeholder-opacity-80
+            placeholder-gray-400 placeholder-opacity-80
             focus:placeholder-opacity-50
+            text-gray-200
           "
         />
         <kbd
           className="
             ml-2 text-[10px] px-1.5 py-0.5 rounded
-            bg-gray-200/80 text-gray-600 border border-gray-300
+            bg-gray-800 text-gray-300 border border-gray-700
           "
         >
           /
         </kbd>
       </div>
 
-      {/* Search shortcut hint */}
       {showHint && (
-        <div className="absolute top-full mt-2 text-xs bg-black text-white px-2 py-1 rounded shadow-lg animate-fade-in">
+        <div className="absolute top-full mt-2 text-xs bg-gray-900 text-white px-2 py-1 rounded shadow-lg animate-fade-in">
           Press / to search instantly
         </div>
       )}
@@ -149,11 +145,11 @@ function HeaderActions() {
         badgeCount={7}
         items={[
           {
-            icon: <Inbox size={16} className="text-blue-500" />,
+            icon: <Inbox size={16} className="text-blue-400" />,
             label: "John sent you a paper draft",
           },
           {
-            icon: <Inbox size={16} className="text-blue-500" />,
+            icon: <Inbox size={16} className="text-blue-400" />,
             label: "Lisa invited you to collaborate",
           },
         ]}
@@ -164,14 +160,17 @@ function HeaderActions() {
 }
 
 /* ------------------ HOVER DROPDOWN ------------------ */
-interface HoverDropdownProps {
+function HoverDropdown({
+  title,
+  icon,
+  badgeCount,
+  items,
+}: {
   title: string;
   icon: React.ReactNode;
   badgeCount?: number;
   items: { icon: React.ReactNode; label: string }[];
-}
-
-function HoverDropdown({ title, icon, badgeCount, items }: HoverDropdownProps) {
+}) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -211,22 +210,26 @@ function HoverDropdown({ title, icon, badgeCount, items }: HoverDropdownProps) {
 }
 
 /* ------------------ ICON BUTTON ------------------ */
-interface IconButtonProps {
+function IconButton({
+  title,
+  icon,
+  badgeCount,
+  onClick,
+}: {
   title: string;
   icon: React.ReactNode;
   badgeCount?: number;
   onClick?: () => void;
-}
-
-function IconButton({ title, icon, badgeCount, onClick }: IconButtonProps) {
+}) {
   return (
     <button
       title={title}
       onClick={onClick}
       className="
         relative p-2 rounded-full
-        hover:bg-white/60 hover:shadow
+        hover:bg-[#1f2937] hover:shadow
         transition-all duration-200
+        text-gray-300
       "
     >
       {icon}
@@ -270,8 +273,7 @@ function ProfileMenu() {
           "
           onClick={() => setOpen(!open)}
         />
-        {/* Online status */}
-        <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+        <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-gray-900 rounded-full"></span>
       </div>
       <DropdownContainer open={open}>
         <DropdownItem icon={<User size={16} />} label="My Profile" />
@@ -283,14 +285,20 @@ function ProfileMenu() {
 }
 
 /* ------------------ DROPDOWN COMPONENTS ------------------ */
-function DropdownContainer({ open, children }: { open: boolean; children: React.ReactNode }) {
+function DropdownContainer({
+  open,
+  children,
+}: {
+  open: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <div
       className={clsx(
         `
         absolute right-0 mt-2 w-64
-        bg-white/95 backdrop-blur-lg
-        border border-gray-200 rounded-xl shadow-xl
+        bg-[#1f2937]/95 backdrop-blur-lg
+        border border-gray-700 rounded-xl shadow-xl
         origin-top-right transform transition-all duration-200 ease-out
         z-[200]
       `,
@@ -306,28 +314,30 @@ function DropdownContainer({ open, children }: { open: boolean; children: React.
 
 function DropdownHeader({ title }: { title: string }) {
   return (
-    <div className="px-4 py-2 text-sm font-semibold text-gray-700 border-b bg-gray-50/90">
+    <div className="px-4 py-2 text-sm font-semibold text-gray-300 border-b border-gray-700 bg-[#111827]/80">
       {title}
     </div>
   );
 }
 
-interface DropdownItemProps {
+function DropdownItem({
+  icon,
+  label,
+  danger,
+}: {
   icon: React.ReactNode;
   label: string;
   danger?: boolean;
-}
-
-function DropdownItem({ icon, label, danger }: DropdownItemProps) {
+}) {
   return (
     <button
       className={`flex items-center px-4 py-2 text-sm w-full transition-all duration-200 ${
         danger
-          ? "text-red-600 hover:bg-red-50"
-          : "text-gray-700 hover:bg-blue-50 hover:text-blue-600"
-      } hover:scale-[1.02]`}
+          ? "text-red-400 hover:bg-red-900/30"
+          : "text-gray-300 hover:bg-blue-900/30 hover:text-blue-300"
+      }`}
     >
-      <span className="transition-transform duration-200 group-hover:scale-110">{icon}</span>
+      {icon}
       <span className="ml-2">{label}</span>
     </button>
   );
@@ -340,76 +350,120 @@ function WelcomeBanner() {
     "Pushing the boundaries of human knowledge.",
     "Every discovery starts with curiosity.",
     "Your research shapes the future.",
-    "The world is waiting for your ideas."
+    "The world is waiting for your ideas.",
   ];
 
   const [showModal, setShowModal] = useState(false);
 
+  // Later: Replace with backend data
+  const userStats = {
+    papers: 0,
+    datasets: 0,
+    collaborations: 0,
+    followers: 0,
+  };
+
+  const allZero =
+    userStats.papers === 0 &&
+    userStats.datasets === 0 &&
+    userStats.collaborations === 0 &&
+    userStats.followers === 0;
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      setQuoteIndex((prev) => (prev + 1) % greetings.length);
-    }, 4000);
+    const interval = setInterval(
+      () => setQuoteIndex((prev) => (prev + 1) % greetings.length),
+      4000
+    );
     return () => clearInterval(interval);
   }, []);
 
   return (
     <>
-      <div className="relative overflow-hidden rounded-xl shadow-md border border-white/10">
+      <div className="relative overflow-hidden rounded-xl shadow-md border border-gray-800">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-900/60 via-purple-800/50 to-indigo-900/50" />
 
         {/* Orbs */}
         <div className="absolute -top-20 -left-20 w-64 h-64 bg-blue-500/20 blur-3xl rounded-full animate-pulse-slow" />
         <div className="absolute top-1/2 -right-20 w-72 h-72 bg-purple-500/20 blur-3xl rounded-full animate-pulse-slow delay-1000" />
 
-        <div
-          className="
-            relative z-10 backdrop-blur-xl
-            p-4 sm:p-5 flex flex-col sm:flex-row
-            items-start sm:items-center justify-between
-          "
-        >
-          <div>
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white drop-shadow-lg">
-              Welcome back, <span className="text-blue-300">Researcher</span>
-            </h2>
-            <p
-              key={quoteIndex}
-              className="mt-1 text-sm sm:text-base text-white/90 font-light transition-all duration-700 ease-in-out animate-fade-in drop-shadow"
+        <div className="relative z-10 backdrop-blur-xl p-4 sm:p-5 flex flex-col gap-4">
+          {/* Greeting */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+                Welcome back, <span className="text-blue-300">Researcher</span>
+              </h2>
+              <p
+                key={quoteIndex}
+                className="mt-1 text-sm sm:text-base text-gray-300 transition-all duration-700 ease-in-out animate-fade-in"
+              >
+                {greetings[quoteIndex]}
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowModal(true)}
+              className="
+                mt-3 sm:mt-0 px-3 py-1.5 rounded-md
+                font-medium flex items-center gap-1.5 text-sm
+                bg-gradient-to-r from-blue-600 to-indigo-600
+                text-white shadow-md shadow-blue-900/30
+                hover:shadow-lg hover:scale-[1.02]
+                transition-all duration-300
+              "
             >
-              {greetings[quoteIndex]}
-            </p>
+              View Trends <ArrowUpRight size={14} />
+            </button>
           </div>
 
-          <button
-            onClick={() => setShowModal(true)}
-            className="
-              relative z-10 mt-3 sm:mt-0 px-3 py-1.5 rounded-md
-              font-medium flex items-center gap-1.5 text-sm
-              bg-gradient-to-r from-blue-600 to-indigo-600
-              text-white shadow-md shadow-blue-900/30
-              hover:shadow-lg hover:shadow-blue-800/40 hover:scale-[1.02]
-              transition-all duration-300
-            "
-          >
-            View Trends <ArrowUpRight size={14} />
-          </button>
+          {/* Stats */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { label: "Papers Published", value: userStats.papers },
+              { label: "Datasets Uploaded", value: userStats.datasets },
+              { label: "Collaborations", value: userStats.collaborations },
+              { label: "Followers", value: userStats.followers },
+            ].map((stat, idx) => (
+              <div
+                key={idx}
+                className="p-3 rounded-lg bg-white/5 border border-gray-700 text-center hover:bg-white/10 transition-all"
+              >
+                <div
+                  className={`text-lg font-bold ${
+                    stat.value > 0 ? "text-white" : "text-gray-400"
+                  }`}
+                >
+                  {stat.value}
+                </div>
+                <div className="text-xs text-gray-400">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Encouragement for new users */}
+          {allZero && (
+            <div className="mt-2 text-xs text-gray-400 italic">
+              You haven’t contributed yet — start by publishing your first paper
+              or uploading a dataset.
+            </div>
+          )}
         </div>
       </div>
-    
 
       {/* Modal */}
       {showModal && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[999]"
+          className="fixed inset-0 bg-black/70 flex items-center justify-center z-[999]"
           onClick={() => setShowModal(false)}
         >
           <div
-            className="bg-white rounded-lg shadow-xl p-6 w-[400px] max-w-full"
+            className="bg-[#1f2937] text-gray-200 rounded-lg shadow-xl p-6 w-[400px] max-w-full border border-gray-700"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-semibold mb-3">Global Trends</h3>
-            <p className="text-gray-600">
-              Here you could preview trending research topics without leaving the dashboard.
+            <p className="text-gray-400">
+              Here you could preview trending research topics without leaving
+              the dashboard.
             </p>
             <button
               onClick={() => setShowModal(false)}

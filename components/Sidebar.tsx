@@ -6,10 +6,7 @@ import {
   LayoutDashboard,
   Globe,
   BookOpen,
-  FileText,
   Database,
-  Code,
-  Users,
   MessageSquare,
   CalendarDays,
   Bell,
@@ -20,7 +17,6 @@ import {
   ChevronRight,
   Menu,
   X,
-  Lightbulb,
   PenTool,
 } from "lucide-react";
 
@@ -60,13 +56,7 @@ export default function Sidebar() {
   };
 
   const menuSections: MenuItem[] = [
-    {
-      name: "Dashboard",
-      icon: LayoutDashboard,
-      path: "/dashboard",
-    },
-
-    // CREATION HUB
+    { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
     {
       name: "Create New",
       icon: PenTool,
@@ -77,8 +67,6 @@ export default function Sidebar() {
         { name: "Collaboration Proposal", path: "/create/collaboration" },
       ],
     },
-
-    // MANAGE MY WORK
     {
       name: "My Research",
       icon: BookOpen,
@@ -91,8 +79,6 @@ export default function Sidebar() {
         { name: "Collaboration Invites", path: "/my-research/invitations" },
       ],
     },
-
-    // DISCOVERY
     {
       name: "Discover Research",
       icon: Globe,
@@ -103,8 +89,6 @@ export default function Sidebar() {
         { name: "Open Access", path: "/discover/open-access" },
       ],
     },
-
-    // COMMUNITY & EVENTS
     {
       name: "Community",
       icon: MessageSquare,
@@ -123,8 +107,6 @@ export default function Sidebar() {
         { name: "Submit Proposal", path: "/conferences/submit" },
       ],
     },
-
-    // TOOLS
     {
       name: "Datasets & Tools",
       icon: Database,
@@ -133,18 +115,8 @@ export default function Sidebar() {
         { name: "Analysis Tools", path: "/datasets/tools" },
       ],
     },
-
-    // DIRECT LINKS
-    {
-      name: "Notifications",
-      icon: Bell,
-      path: "/notifications",
-    },
-    {
-      name: "Messages",
-      icon: Mail,
-      path: "/messages",
-    },
+    { name: "Notifications", icon: Bell, path: "/notifications" },
+    { name: "Messages", icon: Mail, path: "/messages" },
     {
       name: "Profile & Settings",
       icon: User,
@@ -157,17 +129,17 @@ export default function Sidebar() {
   ];
 
   const SidebarContent = (
-    <div className="h-screen w-64 flex flex-col border-r border-gray-800 bg-gradient-to-b from-[#0a0f1f] via-[#0d162b] to-[#05070d] text-white shadow-2xl">
+    <div className="h-screen w-64 flex flex-col bg-[#0e0f12] border-r border-gray-800 shadow-xl">
       {/* Logo */}
-      <div className="p-5 border-b border-gray-800 bg-white/5 backdrop-blur-md sticky top-0 z-10">
-        <h1 className="text-2xl font-extrabold tracking-tight text-blue-400">
+      <div className="p-5 border-b border-gray-800 bg-gradient-to-r from-[#111214] to-[#0d0f13] sticky top-0 z-10">
+        <h1 className="text-2xl font-bold tracking-tight text-blue-400">
           ResearchHub
         </h1>
-        <p className="text-xs text-gray-400">Global Research Network</p>
+        <p className="text-xs text-gray-500">Global Research Network</p>
       </div>
 
       {/* Menu */}
-      <nav className="flex-1 px-3 py-5 space-y-2 overflow-y-auto custom-scroll">
+      <nav className="flex-1 px-3 py-5 space-y-1 overflow-y-auto custom-scroll">
         {menuSections.map((section) => {
           const Icon = section.icon;
           const isExpanded = expanded.includes(section.name);
@@ -181,21 +153,24 @@ export default function Sidebar() {
                     ? toggleExpand(section.name)
                     : handleNavigation(section.path!)
                 }
-                className={`flex items-center justify-between w-full px-4 py-2.5 text-sm rounded-lg transition-all duration-300 ${
+                className={`flex items-center justify-between w-full px-4 py-2.5 text-sm rounded-md transition-all duration-300 ${
                   isActive
-                    ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md"
-                    : "text-gray-300 hover:bg-blue-500/20 hover:text-white"
+                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/40"
+                    : "text-gray-400 hover:bg-[#1a1b1f] hover:text-white"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Icon size={20} className="text-blue-400" />
+                  <Icon
+                    size={18}
+                    className={isActive ? "text-white" : "text-blue-400"}
+                  />
                   {section.name}
                 </div>
                 {section.children &&
                   (isExpanded ? (
-                    <ChevronDown size={16} className="text-gray-400" />
+                    <ChevronDown size={16} className="text-gray-500" />
                   ) : (
-                    <ChevronRight size={16} className="text-gray-400" />
+                    <ChevronRight size={16} className="text-gray-500" />
                   ))}
               </button>
 
@@ -210,10 +185,10 @@ export default function Sidebar() {
                     <button
                       key={child.path}
                       onClick={() => handleNavigation(child.path)}
-                      className={`flex items-center w-full px-3 py-1.5 text-sm rounded-lg transition-all duration-300 ${
+                      className={`flex items-center w-full px-3 py-1.5 text-sm rounded-md transition-all duration-200 ${
                         active === child.path
                           ? "bg-blue-500/80 text-white"
-                          : "text-gray-400 hover:bg-blue-500/20 hover:text-white"
+                          : "text-gray-500 hover:bg-[#1a1b1f] hover:text-white"
                       }`}
                     >
                       {child.name}
@@ -227,10 +202,10 @@ export default function Sidebar() {
       </nav>
 
       {/* Logout */}
-      <div className="p-4 border-t border-gray-800 bg-white/5 backdrop-blur-md sticky bottom-0">
+      <div className="p-4 border-t border-gray-800 bg-[#0d0f13]">
         <button
           onClick={handleLogout}
-          className="flex items-center w-full px-4 py-2 text-sm text-red-400 rounded-lg hover:bg-red-900/30 transition-all duration-300"
+          className="flex items-center w-full px-4 py-2 text-sm text-red-400 rounded-md hover:bg-red-900/30 transition-all duration-200"
         >
           <LogOut size={18} className="mr-3" />
           Logout
@@ -245,16 +220,16 @@ export default function Sidebar() {
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="p-2 bg-gray-900/80 rounded-lg border border-gray-700 text-white"
+          className="p-2 bg-[#111214] rounded-md border border-gray-800 text-white"
         >
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
 
-      {/* Sidebar */}
+      {/* Desktop Sidebar */}
       <div className="hidden lg:block">{SidebarContent}</div>
 
-      {/* Mobile Sidebar Overlay */}
+      {/* Mobile Sidebar */}
       {mobileOpen && (
         <div className="fixed inset-0 z-40 flex">
           <div

@@ -30,7 +30,6 @@ interface MenuItem {
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
-  const [active, setActive] = useState(pathname || "/dashboard");
   const [expanded, setExpanded] = useState<string[]>([]);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -41,7 +40,6 @@ export default function Sidebar() {
   };
 
   const handleNavigation = (path: string) => {
-    setActive(path);
     router.push(path);
     setMobileOpen(false);
   };
@@ -54,6 +52,16 @@ export default function Sidebar() {
       console.error("Logout failed:", err);
     }
   };
+
+  const isParentActive = (section: MenuItem) => {
+    if (section.path && pathname === section.path) return true;
+    if (section.children) {
+      return section.children.some((child) => pathname.startsWith(child.path));
+    }
+    return false;
+  };
+
+  const isChildActive = (path: string) => pathname === path;
 
   const menuSections: MenuItem[] = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
@@ -129,9 +137,9 @@ export default function Sidebar() {
   ];
 
   const SidebarContent = (
-    <div className="h-screen w-64 flex flex-col bg-[#0e0f12] border-r border-gray-800 shadow-xl">
+    <div className="h-screen w-64 flex flex-col bg-[#0e0f12] border-r border-gray-800 shadow-xl transition-all duration-500 ease-in-out">
       {/* Logo */}
-      <div className="p-5 border-b border-gray-800 bg-gradient-to-r from-[#111214] to-[#0d0f13] sticky top-0 z-10">
+      <div className="p-5 border-b border-gray-800 bg-[#111214] sticky top-0 z-10">
         <h1 className="text-2xl font-bold tracking-tight text-blue-400">
           ResearchHub
         </h1>
@@ -139,11 +147,11 @@ export default function Sidebar() {
       </div>
 
       {/* Menu */}
-      <nav className="flex-1 px-3 py-5 space-y-1 overflow-y-auto custom-scroll">
+      <nav className="flex-1 px-3 py-5 overflow-y-auto custom-scroll">
         {menuSections.map((section) => {
           const Icon = section.icon;
-          const isExpanded = expanded.includes(section.name);
-          const isActive = active === section.path;
+          const parentActive = isParentActive(section);
+          const isExpanded = expanded.includes(section.name) || parentActive;
 
           return (
             <div key={section.name}>
@@ -153,16 +161,16 @@ export default function Sidebar() {
                     ? toggleExpand(section.name)
                     : handleNavigation(section.path!)
                 }
-                className={`flex items-center justify-between w-full px-4 py-2.5 text-sm rounded-md transition-all duration-300 ${
-                  isActive
-                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/40"
+                className={`flex items-center justify-between w-full px-4 py-2.5 text-sm rounded-lg transition-all duration-500 ease-in-out ${
+                  parentActive
+                    ? "bg-blue-600/90 text-white shadow-md"
                     : "text-gray-400 hover:bg-[#1a1b1f] hover:text-white"
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <Icon
                     size={18}
-                    className={isActive ? "text-white" : "text-blue-400"}
+                    className={parentActive ? "text-white" : "text-blue-400"}
                   />
                   {section.name}
                 </div>
@@ -177,16 +185,24 @@ export default function Sidebar() {
               {/* Sub-menu */}
               {section.children && (
                 <div
-                  className={`ml-6 mt-1 space-y-1 transition-all duration-300 overflow-hidden ${
-                    isExpanded ? "max-h-60 opacity-100" : "max-h-0 opacity-0"
+                  className={`ml-6 mt-2 space-y-1.5 transition-all duration-700 ease-out ${
+                    isExpanded
+                      ? "opacity-100 translate-y-0 max-h-96"
+                      : "opacity-0 -translate-y-1 max-h-0 overflow-hidden"
                   }`}
+                  style={{
+                    transitionProperty: "opacity, transform, max-height",
+                  }}
                 >
-                  {section.children.map((child) => (
+                  {section.children.map((child, idx) => (
                     <button
                       key={child.path}
                       onClick={() => handleNavigation(child.path)}
-                      className={`flex items-center w-full px-3 py-1.5 text-sm rounded-md transition-all duration-200 ${
-                        active === child.path
+                      style={{
+                        transitionDelay: `${isExpanded ? idx * 50 : 0}ms`,
+                      }}
+                      className={`flex items-center w-full px-3 py-1.5 text-sm rounded-md transition-colors duration-400 ease-in-out ${
+                        isChildActive(child.path)
                           ? "bg-blue-500/80 text-white"
                           : "text-gray-500 hover:bg-[#1a1b1f] hover:text-white"
                       }`}
@@ -205,7 +221,7 @@ export default function Sidebar() {
       <div className="p-4 border-t border-gray-800 bg-[#0d0f13]">
         <button
           onClick={handleLogout}
-          className="flex items-center w-full px-4 py-2 text-sm text-red-400 rounded-md hover:bg-red-900/30 transition-all duration-200"
+          className="flex items-center w-full px-4 py-2 text-sm text-red-400 rounded-md hover:bg-red-900/30 transition-all duration-300 ease-in-out"
         >
           <LogOut size={18} className="mr-3" />
           Logout
@@ -220,7 +236,7 @@ export default function Sidebar() {
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="p-2 bg-[#111214] rounded-md border border-gray-800 text-white"
+          className="p-2 bg-[#111214] rounded-md border border-gray-800 text-white transition-all duration-300 hover:bg-[#1a1b1f]"
         >
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
@@ -233,13 +249,15 @@ export default function Sidebar() {
       {mobileOpen && (
         <div className="fixed inset-0 z-40 flex">
           <div
-            className="transform transition-transform duration-300 translate-x-0"
+            className={`transform transition-transform duration-700 ease-in-out ${
+              mobileOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
             style={{ minWidth: "256px" }}
           >
             {SidebarContent}
           </div>
           <div
-            className="flex-1 bg-black/50"
+            className="flex-1 bg-black/50 backdrop-blur-sm transition-opacity duration-500"
             onClick={() => setMobileOpen(false)}
           ></div>
         </div>

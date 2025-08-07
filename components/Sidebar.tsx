@@ -227,7 +227,7 @@ export default function Sidebar() {
         </div>     
       </div>      
     </SidebarWrapper>  
-  );       
+  );        
      
   return ( 
     <>  

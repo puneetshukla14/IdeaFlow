@@ -348,10 +348,10 @@ function DropdownItem({
 function WelcomeBanner() {
   const [quoteIndex, setQuoteIndex] = useState(0);
   const quotes = [
-    "Breakthroughs don’t wait. Neither should you.",
-    "Curiosity fuels everything worth discovering.",
-    "Ideas matter. But execution writes history.",
-    "Research isn’t slow. It’s precise."
+    "Engineering tomorrow’s surgery begins today.",
+    "Precision, innovation, and every step in between.",
+    "Driving surgical equity through technology.",
+    "Curiosity is our guiding instrument.",
   ];
 
   useEffect(() => {
@@ -368,13 +368,7 @@ function WelcomeBanner() {
       <div className="absolute top-1/2 -right-16 w-72 h-72 bg-purple-500/30 blur-3xl rounded-full animate-pulse-slow delay-1000" />
 
       {/* Main glass card */}
-      <div
-        className="
-          relative backdrop-blur-xl bg-white/10 border border-white/20
-          p-4 sm:p-5 shadow-lg shadow-black/10 flex flex-col sm:flex-row
-          items-start sm:items-center justify-between gap-4
-        "
-      >
+      <div className="relative backdrop-blur-xl bg-white/10 border border-white/20 p-4 sm:p-5 shadow-lg shadow-black/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         {/* Light sweep animation */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-0 left-[-150%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-light-sweep" />
@@ -383,28 +377,17 @@ function WelcomeBanner() {
         {/* Text content */}
         <div className="relative z-10">
           <h2 className="text-lg sm:text-xl font-semibold text-white drop-shadow">
-            Welcome back, <span className="font-bold text-blue-200">Researcher</span>
+            Welcome back, <span className="font-bold text-blue-200">Innovator</span>
           </h2>
-
-          <p
-            key={quoteIndex}
-            className="mt-1 text-sm sm:text-base text-white/90 font-light animate-fade-in drop-shadow"
-          >
+          <p key={quoteIndex} className="mt-1 text-sm sm:text-base text-white/90 font-light animate-fade-in drop-shadow">
             {quotes[quoteIndex]}
           </p>
         </div>
 
-        {/* CTA only */}
+        {/* CTA */}
         <div className="relative z-10 flex flex-col gap-3 items-start sm:items-end text-sm text-white/80 font-inter">
-          <button
-            className="
-              px-3 py-1.5 text-sm rounded-md font-medium flex items-center gap-1
-              bg-gradient-to-r from-blue-500 to-purple-500
-              text-white shadow-md shadow-blue-500/30
-              transition-all duration-300 hover:scale-105 hover:shadow-blue-500/50
-            "
-          >
-            View Global Trends <ArrowUpRight size={16} />
+          <button className="px-3 py-1.5 text-sm rounded-md font-medium flex items-center gap-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-md shadow-blue-500/30 transition-all duration-300 hover:scale-105 hover:shadow-blue-500/50">
+            Explore Training Hub <ArrowUpRight size={16} />
           </button>
         </div>
       </div>

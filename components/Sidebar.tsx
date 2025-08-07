@@ -70,78 +70,74 @@ export default function Sidebar() {
   };
 
   const isChildActive = (path: string) => pathname === path;
-  const menuSections: MenuItem[] = [
-    { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-    {
-      name: "Create New",
-      icon: PenTool,
-      children: [
-        { name: "Research Paper", path: "/create/paper" },
-        { name: "Dataset Project", path: "/create/dataset" },
-        { name: "Code / Tool", path: "/create/code" },
-        { name: "Collab Proposal", path: "/create/collaboration" },
-      ],
-    },
-    {
-      name: "My Research",
-      icon: BookOpen,
-      children: [
-        { name: "My Papers", path: "/my-research/papers" },
-        { name: "My Datasets", path: "/my-research/datasets" },
-        { name: "My Tools", path: "/my-research/code" },
-        { name: "Drafts", path: "/my-research/drafts" },
-        { name: "Citations", path: "/my-research/citations" },
-        { name: "Invites", path: "/my-research/invitations" },
-      ],
-    },
-    {
-      name: "Discover Research",
-      icon: Globe,
-      children: [
-        { name: "Trending", path: "/discover/trending" },
-        { name: "New", path: "/discover/new" },
-        { name: "By Field", path: "/discover/fields" },
-        { name: "Open Access", path: "/discover/open-access" },
-      ],
-    },
-    {
-      name: "Community",
-      icon: MessageSquare,
-      children: [
-        { name: "All Discussions", path: "/community/discussions" },
-        { name: "My Threads", path: "/community/my-threads" },
-        { name: "New Thread", path: "/community/new-thread" },
-      ],
-    },
-    {
-      name: "Global Conferences",
-      icon: CalendarDays,
-      children: [
-        { name: "Upcoming", path: "/conferences/upcoming" },
-        { name: "Past", path: "/conferences/past" },
-        { name: "Submit Proposal", path: "/conferences/submit" },
-      ],
-    },
-    {
-      name: "Datasets & Tools",
-      icon: Database,
-      children: [
-        { name: "Public Datasets", path: "/datasets/public" },
-        { name: "Analysis Tools", path: "/datasets/tools" },
-      ],
-    },
-    { name: "Notifications", icon: Bell, path: "/notifications" },
-    { name: "Messages", icon: Mail, path: "/messages" },
-    {
-      name: "Profile & Settings",
-      icon: User,
-      children: [
-        { name: "My Profile", path: "/profile" },
-        { name: "Account Settings", path: "/settings/account" },
-        { name: "Privacy", path: "/settings/privacy" },
-      ],
-    },
-  ];
+const menuSections: MenuItem[] = [
+  {
+    name: "Dashboard",
+    icon: LayoutDashboard,
+    path: "/dashboard",
+  },
+  {
+    name: "Training Hub",
+    icon: Globe,
+    children: [
+      { name: "Courses & Videos", path: "/training/courses" },
+      { name: "Live Sessions", path: "/training/live" },
+      { name: "Certificates", path: "/training/certificates" },
+    ],
+  },
+  {
+    name: "Robotic Surgeries",
+    icon: Database,
+    children: [
+      { name: "Procedure Library", path: "/surgeries/library" },
+      { name: "Telesurgery Schedule", path: "/surgeries/teleschedule" },
+      { name: "Submit Your Case", path: "/surgeries/submit" },
+    ],
+  },
+  {
+    name: "SSi Products",
+    icon: BookOpen,
+    children: [
+      { name: "SSi Mantra System", path: "/products/mantra" },
+      { name: "SSi Mudra Instruments", path: "/products/mudra" },
+      { name: "Tech Specs & Comparisons", path: "/products/specs" },
+    ],
+  },
+  {
+    name: "Community",
+    icon: MessageSquare,
+    children: [
+      { name: "Global Forum", path: "/community/forum" },
+      { name: "My Contributions", path: "/community/my-threads" },
+      { name: "Collaborate With Peers", path: "/community/collaborate" },
+    ],
+  },
+  {
+    name: "Research & Publications",
+    icon: BookOpen,
+    children: [
+      { name: "My Papers", path: "/research/my-papers" },
+      { name: "Submit New Paper", path: "/research/submit" },
+      { name: "SSi Research Hub", path: "/research/hub" },
+    ],
+  },
+  {
+    name: "Notifications",
+    icon: Bell,
+    path: "/notifications",
+  },
+  {
+    name: "Messages",
+    icon: Mail,
+    path: "/messages",
+  },
+  {
+    name: "Profile",
+    icon: User,
+    path: "/profile",
+  },
+];
+
 
   const SidebarContent = (
     <SidebarWrapper>

@@ -223,7 +223,7 @@ export default function Sidebar() {
             > 
               {trialInfo}   
             </span>  
-          )}   
+          )}    
         </div>    
       </div>     
     </SidebarWrapper> 

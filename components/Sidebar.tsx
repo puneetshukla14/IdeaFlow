@@ -33,7 +33,6 @@ export default function Sidebar() {
   const [expanded, setExpanded] = useState<string[]>([]);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [trialInfo, setTrialInfo] = useState<string | null>(null);
-
   useEffect(() => {
     (async () => {
       const user = await getCurrentUser();

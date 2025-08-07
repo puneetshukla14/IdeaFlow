@@ -11,6 +11,7 @@ export interface IUserData extends Document {
     website: string;
     affiliation: string;
     fieldOfResearch: string;
+    
   };
 }
 const UserDataSchema: Schema<IUserData> = new Schema(

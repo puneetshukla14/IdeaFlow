@@ -23,10 +23,14 @@ export async function POST(req: Request) {
     const newUserNumber = lastUser ? lastUser.userNumber + 1 : 1;
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const premiumExpiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
+
     const newUser = await User.create({
       userNumber: newUserNumber,
       username,
       password: hashedPassword,
+      isPremium: true,
+      premiumExpiresAt,
     });
 
     await UserData.create({ username, profile: {} });

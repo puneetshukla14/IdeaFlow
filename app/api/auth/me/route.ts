@@ -1,32 +1,31 @@
 import dbConnect from "@/lib/mongodb";
-import UserData from "@/models/UserData";
-import { NextResponse } from "next/server";
-import { verifyToken } from "@/lib/jwt";
-import { cookies } from "next/headers";
+import User from "@/models/User"; // or wherever your User model is
 
-export async function GET() {
+export async function GET(req: Request) {
+  await dbConnect();
+
+  const token = req.headers.get("cookie")?.match(/token=([^;]+)/)?.[1];
+
+  if (!token) {
+    return new Response(JSON.stringify({ error: "No token found" }), {
+      status: 401,
+    });
+  }
+
   try {
-    // Server side cookie read
-    const token = (await cookies()).get("token")?.value; 
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { userId } = verifyToken(token); // import this from your jwt helper
+    const user = await User.findById(userId).select("-password");
+
+    if (!user) {
+      return new Response(JSON.stringify({ error: "User not found" }), {
+        status: 404,
+      });
     }
 
-    const decoded = verifyToken(token);
-    if (!decoded || !decoded.username) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-    }
-
-    await dbConnect();
-
-    const userData = await UserData.findOne({ username: decoded.username }).lean();
-    if (!userData) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
-    return NextResponse.json({ user: userData }, { status: 200 });
+    return new Response(JSON.stringify(user), { status: 200 });
   } catch (err) {
-    console.error("Me error:", err);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return new Response(JSON.stringify({ error: "Invalid token" }), {
+      status: 401,
+    });
   }
 }

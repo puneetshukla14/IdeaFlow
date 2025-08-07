@@ -161,10 +161,10 @@ export default function Sidebar() {
                     ? toggleExpand(section.name)
                     : handleNavigation(section.path!)
                 }
-                className={`flex items-center justify-between w-full px-4 py-2.5 text-sm rounded-lg transition-colors duration-200 focus:outline-none focus:ring-0 ${
+                className={`flex items-center justify-between w-full px-4 py-2.5 text-sm rounded-lg transition-colors duration-200 focus:outline-none ${
                   parentActive
-                    ? "bg-[#1f1f22] text-white shadow"
-                    : "text-gray-400 hover:bg-[#1a1b1f]/80 hover:text-white"
+                    ? "bg-[#1f1f22] text-white"
+                    : "text-gray-400 hover:bg-[#1a1b1f] hover:text-white"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -192,10 +192,10 @@ export default function Sidebar() {
                     <button
                       key={child.path}
                       onClick={() => handleNavigation(child.path)}
-                      className={`flex items-center w-full px-3 py-1.5 text-sm rounded-md transition-colors duration-200 text-left focus:outline-none focus:ring-0 ${
+                      className={`flex items-center w-full px-3 py-1.5 text-sm rounded-md transition-colors duration-200 text-left ${
                         isChildActive(child.path)
                           ? "bg-[#2a2a2e] text-white"
-                          : "text-gray-500 hover:bg-[#1a1b1f]/80 hover:text-white"
+                          : "text-gray-500 hover:bg-[#1a1b1f] hover:text-white"
                       }`}
                     >
                       {child.name}
@@ -211,7 +211,7 @@ export default function Sidebar() {
       <div className="p-4 border-t border-gray-800 bg-[#0d0f13]/90 backdrop-blur-sm">
         <button
           onClick={handleLogout}
-          className="flex items-center w-full px-4 py-2 text-sm text-red-400 rounded-md hover:bg-red-900/30 transition-colors duration-200 focus:outline-none focus:ring-0"
+          className="flex items-center w-full px-4 py-2 text-sm text-red-400 rounded-md hover:bg-red-900/30 transition-colors"
         >
           <LogOut size={18} className="mr-3" />
           Logout
@@ -225,7 +225,7 @@ export default function Sidebar() {
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="p-2 bg-[#111214]/80 rounded-md border border-gray-800 text-white backdrop-blur-sm hover:bg-[#1a1b1f]/80 transition focus:outline-none focus:ring-0"
+          className="p-2 bg-[#111214]/80 rounded-md border border-gray-800 text-white backdrop-blur-sm hover:bg-[#1a1b1f] transition"
         >
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
@@ -241,7 +241,7 @@ export default function Sidebar() {
           <div
             className="flex-1 bg-black/40 backdrop-blur-sm"
             onClick={() => setMobileOpen(false)}
-          ></div>
+          />
         </div>
       )}
 
@@ -255,10 +255,6 @@ export default function Sidebar() {
         .custom-scroll::-webkit-scrollbar-thumb {
           background-color: rgba(100, 116, 139, 0.5);
           border-radius: 9999px;
-        }
-        button:focus {
-          outline: none;
-          box-shadow: none;
         }
       `}</style>
     </>

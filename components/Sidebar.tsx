@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import SidebarWrapper from "@/components/SidebarWrapper";
+
 import {
   LayoutDashboard,
   Globe,
@@ -19,6 +21,7 @@ import {
   X,
   PenTool,
 } from "lucide-react";
+
 
 interface MenuItem {
   name: string;
@@ -46,7 +49,10 @@ export default function Sidebar() {
 
   const handleLogout = async () => {
     try {
-      await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
       router.push("/sign-in");
     } catch (err) {
       console.error("Logout failed:", err);
@@ -71,8 +77,8 @@ export default function Sidebar() {
       children: [
         { name: "Research Paper", path: "/create/paper" },
         { name: "Dataset Project", path: "/create/dataset" },
-        { name: "Code / Tool Project", path: "/create/code" },
-        { name: "Collaboration Proposal", path: "/create/collaboration" },
+        { name: "Code / Tool", path: "/create/code" },
+        { name: "Collab Proposal", path: "/create/collaboration" },
       ],
     },
     {
@@ -81,18 +87,18 @@ export default function Sidebar() {
       children: [
         { name: "My Papers", path: "/my-research/papers" },
         { name: "My Datasets", path: "/my-research/datasets" },
-        { name: "My Code & Tools", path: "/my-research/code" },
+        { name: "My Tools", path: "/my-research/code" },
         { name: "Drafts", path: "/my-research/drafts" },
         { name: "Citations", path: "/my-research/citations" },
-        { name: "Collaboration Invites", path: "/my-research/invitations" },
+        { name: "Invites", path: "/my-research/invitations" },
       ],
     },
     {
       name: "Discover Research",
       icon: Globe,
       children: [
-        { name: "Trending Papers", path: "/discover/trending" },
-        { name: "New Submissions", path: "/discover/new" },
+        { name: "Trending", path: "/discover/trending" },
+        { name: "New", path: "/discover/new" },
         { name: "By Field", path: "/discover/fields" },
         { name: "Open Access", path: "/discover/open-access" },
       ],
@@ -103,7 +109,7 @@ export default function Sidebar() {
       children: [
         { name: "All Discussions", path: "/community/discussions" },
         { name: "My Threads", path: "/community/my-threads" },
-        { name: "Start New Thread", path: "/community/new-thread" },
+        { name: "New Thread", path: "/community/new-thread" },
       ],
     },
     {
@@ -137,9 +143,9 @@ export default function Sidebar() {
   ];
 
   const SidebarContent = (
-    <div className="h-screen w-64 flex flex-col bg-[#0e0f12] border-r border-gray-800 shadow-xl transition-all duration-300">
-      {/* Logo */}
-      <div className="p-5 border-b border-gray-800 bg-[#111214] sticky top-0 z-10">
+    <SidebarWrapper>
+      {/* Header */}
+      <div className="p-5 border-b border-gray-800 bg-[#111214]/90 sticky top-0 z-10 backdrop-blur-sm">
         <h1 className="text-2xl font-bold tracking-tight text-blue-400">
           ResearchHub
         </h1>
@@ -185,15 +191,15 @@ export default function Sidebar() {
               {/* Sub-menu */}
               {section.children && (
                 <div
-                  className={`ml-6 mt-2 space-y-1.5 overflow-hidden transition-all duration-500 ${
+                  className={`ml-6 mt-2 space-y-1 overflow-hidden transition-all duration-300 ${
                     isExpanded ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
                   }`}
                 >
-                  {section.children.map((child, idx) => (
+                  {section.children.map((child) => (
                     <button
                       key={child.path}
                       onClick={() => handleNavigation(child.path)}
-                      className={`flex items-center w-full px-3 py-1.5 text-sm rounded-md transition-colors duration-200 ${
+                      className={`flex items-center w-full px-3 py-1.5 text-sm rounded-md transition-colors duration-200 text-left ${
                         isChildActive(child.path)
                           ? "bg-blue-500/80 text-white"
                           : "text-gray-500 hover:bg-[#1a1b1f]/80 hover:text-white"
@@ -210,7 +216,7 @@ export default function Sidebar() {
       </nav>
 
       {/* Logout */}
-      <div className="p-4 border-t border-gray-800 bg-[#0d0f13]">
+      <div className="p-4 border-t border-gray-800 bg-[#0d0f13]/90 backdrop-blur-sm">
         <button
           onClick={handleLogout}
           className="flex items-center w-full px-4 py-2 text-sm text-red-400 rounded-md hover:bg-red-900/30 transition-colors duration-200"
@@ -219,7 +225,7 @@ export default function Sidebar() {
           Logout
         </button>
       </div>
-    </div>
+    </SidebarWrapper>
   );
 
   return (
@@ -228,7 +234,7 @@ export default function Sidebar() {
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="p-2 bg-[#111214] rounded-md border border-gray-800 text-white transition-all duration-200 hover:bg-[#1a1b1f]"
+          className="p-2 bg-[#111214]/80 rounded-md border border-gray-800 text-white backdrop-blur-sm hover:bg-[#1a1b1f]/80 transition"
         >
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
@@ -240,16 +246,17 @@ export default function Sidebar() {
       {/* Mobile Sidebar */}
       {mobileOpen && (
         <div className="fixed inset-0 z-40 flex">
-          <div className="w-64 bg-[#0e0f12] shadow-lg transform translate-x-0 transition-transform duration-300">
+          <div className="w-64 bg-[#0e0f12]/90 backdrop-blur-md shadow-lg">
             {SidebarContent}
           </div>
           <div
-            className="flex-1 bg-black/40 backdrop-blur-sm transition-opacity duration-300"
+            className="flex-1 bg-black/40 backdrop-blur-sm"
             onClick={() => setMobileOpen(false)}
           ></div>
         </div>
       )}
 
+      {/* Scrollbar */}
       <style jsx global>{`
         .custom-scroll::-webkit-scrollbar {
           width: 6px;

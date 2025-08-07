@@ -230,7 +230,7 @@ export default function Sidebar() {
   );      
      
   return ( 
-    <> 
+    <>  
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setMobileOpen(!mobileOpen)}

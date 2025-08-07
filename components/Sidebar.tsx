@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import SidebarWrapper from "@/components/SidebarWrapper";
 import Logo from "@/components/Logo";
@@ -14,13 +14,14 @@ import {
   Bell,
   Mail,
   User,
-  LogOut,
   ChevronDown,
   ChevronRight,
   Menu,
   X,
   PenTool,
 } from "lucide-react";
+import { getCurrentUser } from "@/lib/getCurrentUser";
+
 
 interface MenuItem {
   name: string;
@@ -34,6 +35,25 @@ export default function Sidebar() {
   const pathname = usePathname();
   const [expanded, setExpanded] = useState<string[]>([]);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [trialInfo, setTrialInfo] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const user = await getCurrentUser();
+
+      if (user?.isPremium && user?.premiumExpiresAt) {
+        const expiresAt = new Date(user.premiumExpiresAt);
+        const now = new Date();
+        const diff = Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+        if (diff > 0) {
+          setTrialInfo(`${diff} day${diff !== 1 ? "s" : ""} left in free trial`);
+        } else {
+          setTrialInfo("Trial expired");
+        }
+      }
+    })();
+  }, []);
 
   const toggleExpand = (name: string) => {
     setExpanded((prev) =>
@@ -44,18 +64,6 @@ export default function Sidebar() {
   const handleNavigation = (path: string) => {
     router.push(path);
     setMobileOpen(false);
-  };
-
-  const handleLogout = async () => {
-    try {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-      router.push("/sign-in");
-    } catch (err) {
-      console.error("Logout failed:", err);
-    }
   };
 
   const isParentActive = (section: MenuItem) => {
@@ -209,13 +217,20 @@ export default function Sidebar() {
       </nav>
 
       <div className="p-4 border-t border-gray-800 bg-[#0d0f13]/90 backdrop-blur-sm">
-        <button
-          onClick={handleLogout}
-          className="flex items-center w-full px-4 py-2 text-sm text-red-400 rounded-md hover:bg-red-900/30 transition-colors"
-        >
-          <LogOut size={18} className="mr-3" />
-          Logout
-        </button>
+        <div className="flex flex-col items-center text-center">
+          <span className="text-[10px] text-zinc-600">v1.8.25</span>
+          {trialInfo && (
+            <span
+              className={`mt-1 text-[11px] font-medium ${
+                trialInfo.includes("expired")
+                  ? "text-yellow-500/80"
+                  : "text-emerald-400/90"
+              }`}
+            >
+              {trialInfo}
+            </span>
+          )}
+        </div>
       </div>
     </SidebarWrapper>
   );

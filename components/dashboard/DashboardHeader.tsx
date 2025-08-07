@@ -371,7 +371,7 @@ function WelcomeBanner() {
       <div
         className="
           relative backdrop-blur-xl bg-white/10 border border-white/20
-          p-5 sm:p-6 shadow-lg shadow-black/10 flex flex-col sm:flex-row
+          p-4 sm:p-5 shadow-lg shadow-black/10 flex flex-col sm:flex-row
           items-start sm:items-center justify-between gap-4
         "
       >
@@ -382,12 +382,10 @@ function WelcomeBanner() {
 
         {/* Text content */}
         <div className="relative z-10">
-          <h2 className="text-xl sm:text-2xl font-semibold text-white drop-shadow">
+          <h2 className="text-lg sm:text-xl font-semibold text-white drop-shadow">
             Welcome back, <span className="font-bold text-blue-200">Researcher</span>
           </h2>
-          <p className="mt-1 text-sm sm:text-base text-white/80 font-light drop-shadow">
-            Your lab. Your mind. Your momentum.
-          </p>
+
           <p
             key={quoteIndex}
             className="mt-1 text-sm sm:text-base text-white/90 font-light animate-fade-in drop-shadow"
@@ -396,12 +394,11 @@ function WelcomeBanner() {
           </p>
         </div>
 
-        {/* CTA + Quick stats */}
+        {/* CTA only */}
         <div className="relative z-10 flex flex-col gap-3 items-start sm:items-end text-sm text-white/80 font-inter">
-          {/* Main CTA */}
           <button
             className="
-              px-4 py-2 rounded-md font-medium flex items-center gap-1
+              px-3 py-1.5 text-sm rounded-md font-medium flex items-center gap-1
               bg-gradient-to-r from-blue-500 to-purple-500
               text-white shadow-md shadow-blue-500/30
               transition-all duration-300 hover:scale-105 hover:shadow-blue-500/50
@@ -409,44 +406,6 @@ function WelcomeBanner() {
           >
             View Global Trends <ArrowUpRight size={16} />
           </button>
-
-          {/* Quick Stats */}
-          <div className="mt-1.5 space-y-1.5 bg-white/5 rounded-md p-3 border border-white/10 backdrop-blur-sm w-full sm:w-72 text-[13px] leading-tight">
-            <div className="flex justify-between items-center">
-              <span className="flex items-center gap-1">
-                <CircleDot size={12} className="text-blue-400" />
-                <span>New papers today</span>
-              </span>
-              <span className="font-semibold text-white">+128</span>
-            </div>
-
-            <div className="flex justify-between items-center">
-              <span className="flex items-center gap-1">
-                <BarChart2 size={12} className="text-green-400" />
-                <span>Citation growth</span>
-              </span>
-              <span className="font-semibold text-white">+9%</span>
-            </div>
-
-            <div className="flex justify-between items-center">
-              <span className="flex items-center gap-1">
-                <Flame size={12} className="text-orange-400" />
-                <span>Trending field</span>
-              </span>
-              <span className="font-semibold text-white whitespace-nowrap">
-                AI & Neuro
-              </span>
-            </div>
-
-            <div className="flex justify-between items-center">
-              <span className="flex items-center gap-1">
-                <BookOpen size={12} className="text-purple-400" />
-                <span>Reading progress</span>
-              </span>
-              
-              <span className="font-semibold text-white">7/20</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

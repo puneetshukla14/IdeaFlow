@@ -221,7 +221,7 @@ export default function Sidebar() {
                   : "text-emerald-400/90"
               }`}
             > 
-              {trialInfo}   
+              {trialInfo}    
             </span>  
           )}    
         </div>    

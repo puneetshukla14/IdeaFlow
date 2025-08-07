@@ -11,7 +11,7 @@ export interface IUserData extends Document {
     website: string;
     affiliation: string;
     fieldOfResearch: string;
-    
+
   };
 }
 const UserDataSchema: Schema<IUserData> = new Schema(
@@ -34,4 +34,3 @@ const UserDataSchema: Schema<IUserData> = new Schema(
 const UserData: Model<IUserData> =
   mongoose.models.UserData || mongoose.model<IUserData>("UserData", UserDataSchema);
 export default UserData;
-vsssso

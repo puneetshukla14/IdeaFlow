@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import SidebarWrapper from "@/components/SidebarWrapper";
-
+import Logo from "@/components/Logo";
 import {
   LayoutDashboard,
   Globe,
@@ -145,12 +145,9 @@ export default function Sidebar() {
   const SidebarContent = (
     <SidebarWrapper>
       {/* Header */}
-      <div className="p-5 border-b border-gray-800 bg-[#111214]/90 sticky top-0 z-10 backdrop-blur-sm">
-        <h1 className="text-2xl font-bold tracking-tight text-blue-400">
-          ResearchHub
-        </h1>
-        <p className="text-xs text-gray-500">Global Research Network</p>
-      </div>
+<div className="p-5 border-b border-gray-800 bg-[#111214]/90 sticky top-0 z-10 backdrop-blur-sm">
+  <Logo />
+</div>
 
       {/* Menu */}
       <nav className="flex-1 px-3 py-5 overflow-y-auto custom-scroll">

@@ -9,8 +9,8 @@ export async function getCurrentUser() {
 
     if (!res.ok) return null;
 
-    const data = await res.json();
-    return data.user;
+    const user = await res.json(); // direct object
+    return user;
   } catch (err) {
     return null;
   }

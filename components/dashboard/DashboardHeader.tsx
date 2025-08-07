@@ -31,12 +31,12 @@ function HeaderTop() {
     <header
       className="
         flex items-center justify-between
-        bg-[#111827]/80 backdrop-blur-xl
+        bg-[#0f1115]/90 backdrop-blur-xl
         px-4 py-2 rounded-xl
-        shadow-lg shadow-black/40
-        border border-gray-800
+        shadow-lg shadow-black/50
+        border border-[#1d1f25]
+        hover:border-[#2a2d33]
         transition-all duration-300
-        hover:shadow-xl hover:border-gray-700
         relative z-50
       "
     >
@@ -75,13 +75,11 @@ function SearchBar() {
       <div
         className="
           flex items-center
-          bg-[#1f2937]/80 backdrop-blur-md
+          bg-[#1a1c21]/90 backdrop-blur-md
           rounded-xl px-3 py-2 w-80
-          ring-2 ring-blue-500/40 shadow-inner
-          border border-gray-700
-          transition-all duration-300 ease-in-out
-          hover:bg-[#1f2937] hover:shadow-lg
-          hover:ring-blue-500 focus-within:ring-blue-400
+          border border-[#2a2d33]
+          transition-all duration-300
+          focus-within:border-blue-500 hover:border-blue-500/70
         "
       >
         <Search size={18} className="text-gray-400 mr-2" />
@@ -92,15 +90,15 @@ function SearchBar() {
           className="
             bg-transparent outline-none
             text-[15px] font-medium w-full
-            placeholder-gray-400 placeholder-opacity-80
-            focus:placeholder-opacity-50
+            placeholder-gray-400
+            focus:placeholder-opacity-60
             text-gray-200
           "
         />
         <kbd
           className="
             ml-2 text-[10px] px-1.5 py-0.5 rounded
-            bg-gray-800 text-gray-300 border border-gray-700
+            bg-[#22252c] text-gray-300 border border-[#2a2d33]
           "
         >
           /
@@ -108,7 +106,7 @@ function SearchBar() {
       </div>
 
       {showHint && (
-        <div className="absolute top-full mt-2 text-xs bg-gray-900 text-white px-2 py-1 rounded shadow-lg animate-fade-in">
+        <div className="absolute top-full mt-2 text-xs bg-[#1a1c21] text-white px-2 py-1 rounded border border-[#2a2d33] shadow-lg animate-fade-in">
           Press / to search instantly
         </div>
       )}
@@ -227,7 +225,7 @@ function IconButton({
       onClick={onClick}
       className="
         relative p-2 rounded-full
-        hover:bg-[#1f2937] hover:shadow
+        hover:bg-[#232732]
         transition-all duration-200
         text-gray-300
       "
@@ -273,7 +271,7 @@ function ProfileMenu() {
           "
           onClick={() => setOpen(!open)}
         />
-        <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-gray-900 rounded-full"></span>
+        <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#0f1115] rounded-full"></span>
       </div>
       <DropdownContainer open={open}>
         <DropdownItem icon={<User size={16} />} label="My Profile" />
@@ -297,8 +295,8 @@ function DropdownContainer({
       className={clsx(
         `
         absolute right-0 mt-2 w-64
-        bg-[#1f2937]/95 backdrop-blur-lg
-        border border-gray-700 rounded-xl shadow-xl
+        bg-[#1a1c21]/95 backdrop-blur-lg
+        border border-[#2a2d33] rounded-xl shadow-xl
         origin-top-right transform transition-all duration-200 ease-out
         z-[200]
       `,
@@ -314,7 +312,7 @@ function DropdownContainer({
 
 function DropdownHeader({ title }: { title: string }) {
   return (
-    <div className="px-4 py-2 text-sm font-semibold text-gray-300 border-b border-gray-700 bg-[#111827]/80">
+    <div className="px-4 py-2 text-sm font-semibold text-gray-300 border-b border-[#2a2d33] bg-[#0f1115]/80">
       {title}
     </div>
   );
@@ -334,7 +332,7 @@ function DropdownItem({
       className={`flex items-center px-4 py-2 text-sm w-full transition-all duration-200 ${
         danger
           ? "text-red-400 hover:bg-red-900/30"
-          : "text-gray-300 hover:bg-blue-900/30 hover:text-blue-300"
+          : "text-gray-300 hover:bg-[#232732] hover:text-blue-300"
       }`}
     >
       {icon}
@@ -379,12 +377,12 @@ function WelcomeBanner() {
 
   return (
     <>
-      <div className="relative overflow-hidden rounded-xl shadow-md border border-gray-800">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/60 via-purple-800/50 to-indigo-900/50" />
+      <div className="relative overflow-hidden rounded-xl shadow-md border border-[#1d1f25]">
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-700/40 via-purple-700/30 to-blue-700/40" />
 
         {/* Orbs */}
-        <div className="absolute -top-20 -left-20 w-64 h-64 bg-blue-500/20 blur-3xl rounded-full animate-pulse-slow" />
-        <div className="absolute top-1/2 -right-20 w-72 h-72 bg-purple-500/20 blur-3xl rounded-full animate-pulse-slow delay-1000" />
+        <div className="absolute -top-20 -left-20 w-64 h-64 bg-blue-500/15 blur-3xl rounded-full animate-pulse-slow" />
+        <div className="absolute top-1/2 -right-20 w-72 h-72 bg-purple-500/15 blur-3xl rounded-full animate-pulse-slow delay-1000" />
 
         <div className="relative z-10 backdrop-blur-xl p-4 sm:p-5 flex flex-col gap-4">
           {/* Greeting */}
@@ -426,7 +424,7 @@ function WelcomeBanner() {
             ].map((stat, idx) => (
               <div
                 key={idx}
-                className="p-3 rounded-lg bg-white/5 border border-gray-700 text-center hover:bg-white/10 transition-all"
+                className="p-3 rounded-lg bg-[#1a1c21] border border-[#2a2d33] text-center hover:bg-[#232732] transition-all"
               >
                 <div
                   className={`text-lg font-bold ${
@@ -442,7 +440,7 @@ function WelcomeBanner() {
 
           {/* Encouragement for new users */}
           {allZero && (
-            <div className="mt-2 text-xs text-gray-400 italic">
+            <div className="mt-2 text-xs text-gray-500 italic">
               You haven’t contributed yet — start by publishing your first paper
               or uploading a dataset.
             </div>
@@ -457,7 +455,7 @@ function WelcomeBanner() {
           onClick={() => setShowModal(false)}
         >
           <div
-            className="bg-[#1f2937] text-gray-200 rounded-lg shadow-xl p-6 w-[400px] max-w-full border border-gray-700"
+            className="bg-[#1a1c21] text-gray-200 rounded-lg shadow-xl p-6 w-[400px] max-w-full border border-[#2a2d33]"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-semibold mb-3">Global Trends</h3>

@@ -50,7 +50,6 @@ export default function Sidebar() {
       }
     })();
   }, []);
-
   const toggleExpand = (name: string) => {
     setExpanded((prev) =>
       prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]

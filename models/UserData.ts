@@ -33,4 +33,4 @@ const UserDataSchema: Schema<IUserData> = new Schema(
 const UserData: Model<IUserData> =
   mongoose.models.UserData || mongoose.model<IUserData>("UserData", UserDataSchema);
 export default UserData;
-vss
+vsss

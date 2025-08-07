@@ -222,7 +222,7 @@ export default function Sidebar() {
               }`}
             > 
               {trialInfo}   
-            </span> 
+            </span>  
           )}   
         </div>   
       </div>     

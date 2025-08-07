@@ -9,7 +9,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SidebarWrapper>
           <Sidebar />
         </SidebarWrapper>
-        <main className="flex-1 p-6 overflow-y-auto">{children}</main>
+<main className="ml-64 flex-1 p-6 overflow-y-auto">{children}</main>
+
       </body>
     </html>
   );

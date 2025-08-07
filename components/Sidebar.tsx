@@ -22,7 +22,6 @@ import {
   PenTool,
 } from "lucide-react";
 
-
 interface MenuItem {
   name: string;
   icon: any;
@@ -144,12 +143,10 @@ export default function Sidebar() {
 
   const SidebarContent = (
     <SidebarWrapper>
-      {/* Header */}
-<div className="p-5 border-b border-gray-800 bg-[#111214]/90 sticky top-0 z-10 backdrop-blur-sm">
-  <Logo />
-</div>
+      <div className="p-5 border-b border-gray-800 bg-[#111214]/90 sticky top-0 z-10 backdrop-blur-sm">
+        <Logo />
+      </div>
 
-      {/* Menu */}
       <nav className="flex-1 px-3 py-5 overflow-y-auto custom-scroll">
         {menuSections.map((section) => {
           const Icon = section.icon;
@@ -164,16 +161,16 @@ export default function Sidebar() {
                     ? toggleExpand(section.name)
                     : handleNavigation(section.path!)
                 }
-                className={`flex items-center justify-between w-full px-4 py-2.5 text-sm rounded-lg transition-colors duration-200 ${
+                className={`flex items-center justify-between w-full px-4 py-2.5 text-sm rounded-lg transition-colors duration-200 focus:outline-none focus:ring-0 ${
                   parentActive
-                    ? "bg-blue-600/90 text-white shadow-md"
+                    ? "bg-[#1f1f22] text-white shadow"
                     : "text-gray-400 hover:bg-[#1a1b1f]/80 hover:text-white"
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <Icon
                     size={18}
-                    className={parentActive ? "text-white" : "text-blue-400"}
+                    className={parentActive ? "text-white" : "text-gray-400"}
                   />
                   {section.name}
                 </div>
@@ -185,7 +182,6 @@ export default function Sidebar() {
                   ))}
               </button>
 
-              {/* Sub-menu */}
               {section.children && (
                 <div
                   className={`ml-6 mt-2 space-y-1 overflow-hidden transition-all duration-300 ${
@@ -196,9 +192,9 @@ export default function Sidebar() {
                     <button
                       key={child.path}
                       onClick={() => handleNavigation(child.path)}
-                      className={`flex items-center w-full px-3 py-1.5 text-sm rounded-md transition-colors duration-200 text-left ${
+                      className={`flex items-center w-full px-3 py-1.5 text-sm rounded-md transition-colors duration-200 text-left focus:outline-none focus:ring-0 ${
                         isChildActive(child.path)
-                          ? "bg-blue-500/80 text-white"
+                          ? "bg-[#2a2a2e] text-white"
                           : "text-gray-500 hover:bg-[#1a1b1f]/80 hover:text-white"
                       }`}
                     >
@@ -212,11 +208,10 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Logout */}
       <div className="p-4 border-t border-gray-800 bg-[#0d0f13]/90 backdrop-blur-sm">
         <button
           onClick={handleLogout}
-          className="flex items-center w-full px-4 py-2 text-sm text-red-400 rounded-md hover:bg-red-900/30 transition-colors duration-200"
+          className="flex items-center w-full px-4 py-2 text-sm text-red-400 rounded-md hover:bg-red-900/30 transition-colors duration-200 focus:outline-none focus:ring-0"
         >
           <LogOut size={18} className="mr-3" />
           Logout
@@ -227,20 +222,17 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobile Toggle */}
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="p-2 bg-[#111214]/80 rounded-md border border-gray-800 text-white backdrop-blur-sm hover:bg-[#1a1b1f]/80 transition"
+          className="p-2 bg-[#111214]/80 rounded-md border border-gray-800 text-white backdrop-blur-sm hover:bg-[#1a1b1f]/80 transition focus:outline-none focus:ring-0"
         >
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
 
-      {/* Desktop Sidebar */}
       <div className="hidden lg:block">{SidebarContent}</div>
 
-      {/* Mobile Sidebar */}
       {mobileOpen && (
         <div className="fixed inset-0 z-40 flex">
           <div className="w-64 bg-[#0e0f12]/90 backdrop-blur-md shadow-lg">
@@ -253,7 +245,6 @@ export default function Sidebar() {
         </div>
       )}
 
-      {/* Scrollbar */}
       <style jsx global>{`
         .custom-scroll::-webkit-scrollbar {
           width: 6px;
@@ -264,6 +255,10 @@ export default function Sidebar() {
         .custom-scroll::-webkit-scrollbar-thumb {
           background-color: rgba(100, 116, 139, 0.5);
           border-radius: 9999px;
+        }
+        button:focus {
+          outline: none;
+          box-shadow: none;
         }
       `}</style>
     </>

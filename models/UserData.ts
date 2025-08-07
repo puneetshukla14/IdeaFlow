@@ -1,5 +1,4 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
-
 export interface IUserData extends Document {
   username: string;
   profile: {
@@ -14,7 +13,6 @@ export interface IUserData extends Document {
     fieldOfResearch: string;
   };
 }
-
 const UserDataSchema: Schema<IUserData> = new Schema(
   {
     username: { type: String, required: true, unique: true },
@@ -32,8 +30,6 @@ const UserDataSchema: Schema<IUserData> = new Schema(
   },
   { timestamps: true }
 );
-
 const UserData: Model<IUserData> =
   mongoose.models.UserData || mongoose.model<IUserData>("UserData", UserDataSchema);
-
 export default UserData;

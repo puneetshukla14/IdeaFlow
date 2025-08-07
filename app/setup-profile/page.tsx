@@ -16,7 +16,6 @@ const avatars = [
 export default function SetupProfilePage() {
   const router = useRouter();
 
-  // All hooks at the top, before any return
   const [form, setForm] = useState({
     fullName: "",
     affiliation: "",
@@ -39,33 +38,28 @@ export default function SetupProfilePage() {
     (async () => {
       try {
         const res = await fetch("/api/auth/me", { credentials: "include" });
-
-        if (!res.ok) {
-          router.replace("/sign-in");
-          return;
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.user) {
+            setUserId(data.user._id);
+            setForm((prev) => ({
+              ...prev,
+              fullName: data.user.fullName || "",
+              email: data.user.email || "",
+            }));
+          }
         }
-
-        const data = await res.json();
-
-        if (!data?.user) {
-          router.replace("/sign-in");
-          return;
-        }
-
-        setUserId(data.user._id);
-        setForm((prev) => ({
-          ...prev,
-          fullName: data.user.fullName || "",
-          email: data.user.email || "",
-        }));
       } catch (err) {
         console.error("Error fetching user:", err);
-        router.replace("/sign-in");
       } finally {
         setLoadingUser(false);
       }
     })();
-  }, [router]);
+  }, []);
+
+  const handleChange = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
 
   // Generate username suggestions
   useEffect(() => {
@@ -85,23 +79,12 @@ export default function SetupProfilePage() {
     return () => clearTimeout(timeout);
   }, [form.fullName]);
 
-  if (loadingUser) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-white bg-black">
-        Loading...
-      </div>
-    );
-  }
-
-  const handleChange = (field: string, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  };
-
   const handleSelectSuggestion = (value: string) => {
     handleChange("username", value);
     setSuggestions([]);
   };
 
+  // Submit form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -118,18 +101,20 @@ export default function SetupProfilePage() {
       const res = await fetch("/api/setup-profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        credentials: "include", // IMPORTANT
         body: JSON.stringify({ ...form, userId }),
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        window.location.href = data.redirectTo || "/dashboard";
-        return;
-      } else {
-        const err = await res.json().catch(() => ({}));
-        alert("Error saving profile: " + (err.error || "Unknown error"));
-      }
+if (res.ok) {
+  const data = await res.json();
+  window.location.href = data.redirectTo || "/dashboard"; // force reload, cookie is present
+}
+
+ else {
+  const err = await res.json().catch(() => ({}));
+  alert("Error saving profile: " + (err.error || "Unknown error"));
+}
+
     } catch (error) {
       console.error("Error submitting profile:", error);
       alert("Something went wrong. Try again.");

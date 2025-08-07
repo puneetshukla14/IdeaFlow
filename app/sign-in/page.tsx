@@ -46,7 +46,8 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center">
+    <div className="relative min-h-screen flex items-center justify-center bg-transparent">
+
       {/* Background */}
       <AuthBackground />
 

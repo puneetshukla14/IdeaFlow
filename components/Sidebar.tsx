@@ -21,7 +21,6 @@ import {
   PenTool,
 } from "lucide-react";
 import { getCurrentUser } from "@/lib/getCurrentUser";
-
 interface MenuItem {
   name: string;
   icon: any;

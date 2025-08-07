@@ -218,7 +218,7 @@ export default function Sidebar() {
               className={`mt-1 text-[11px] font-medium ${
                 trialInfo.includes("expired")
                   ? "text-yellow-500/80"
-                  : "text-emerald-400/90"
+                  : "text-emerald-400/9 0"
               }`}
             > 
               {trialInfo}   
